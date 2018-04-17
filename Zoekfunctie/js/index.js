@@ -104,7 +104,8 @@
       var distanceround = in_area[i][3];
 
       $('main ol').append('<li>' +
-        '<h4>' + dealername + ' (' + distanceround + ' km afstand)</h4>' +
+        //'<h4>' + dealername + ' (' + distanceround + ' km afstand)</h4>' +
+        '<h4>' + dealername + ' </h4>' +
         '<p>' + dealeraddress + '</p>' +
         '<a href="mailto:' + dealeremail + '">' + dealeremail + '</a>' +
         '</li>');
