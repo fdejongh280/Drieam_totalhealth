@@ -83,7 +83,7 @@ select:-moz-focusring {
 [type=submit]:hover,
 [type=submit]:focus {
   background: #FFF;
-  color: #426AFB
+  color: #007748;
 }
 
 ol {

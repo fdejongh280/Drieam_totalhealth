@@ -1,6 +1,5 @@
   var markers = [];
   var in_area = [];
-  var autocomplete;
   var locations = [
     ['Rijks museum', 52.360135, 4.885498, 'Museumstraat 1, 1071 XX Amsterdam', 'Rijks@gmail.com'],
     ['Van Abbe museum', 51.434547, 5.482056, 'Bilderdijklaan 10, 5611 NH Eindhoven', 'Abbe@gmail.com'],
