@@ -1,3 +1,23 @@
+<?php
+include('db_connection.php');
+        $name = "";
+        $therapie = "";
+        $sql = "SELECT * FROM alumni_information";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+        
+        // output data of each row
+        while($row = $result->fetch_assoc()) {
+        //echo "Name: " . $row["naam"]. "<br>";
+            $name = $row["naam"];
+            $therapie = $row["therapie"];
+        }
+    } else {
+    echo "Error 404";
+}
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +30,7 @@
 			<div class="sidebar-top">
 				<img class="profile-image" src="http://www.slate.com/content/dam/slate/blogs/xx_factor/2014/susan.jpg.CROP.promo-mediumlarge.jpg" />
 				<div class="profile-basic">
-					<h1 class="name">Olga Oosterhof</h1>
+					<h1 class="name"><?php echo $name; ?></h1>
 				</div>
 			</div>
 			<div class="profile-info">
@@ -29,9 +49,10 @@
 
 		</div>
 
+        
 		<div class="content">
 			<div class="work-experience">
-				<h1 class="heading">Reflextherapie</h1>
+				<h1 class="heading"><?php echo $therapie; ?></h1>
 				<div class="info">
 					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                     
