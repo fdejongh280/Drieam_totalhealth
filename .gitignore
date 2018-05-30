@@ -1,0 +1,5 @@
+# Ignore idea folder
+.idea/
+
+# Seperate files
+.DS_Store
