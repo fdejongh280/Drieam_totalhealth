@@ -1,0 +1,146 @@
+body {
+			background: white;
+			color: #767270;
+/*			padding: 1%;*/
+			font-size: 14px;
+			font-family: verdana, sans-serif;
+            margin-top: 10px;
+            }
+
+.alumnicontainer {
+/*			position: absolute;*/
+			display: none;
+		    }
+		
+.sidebar {
+			width:30%;
+			display: inline-block;
+			margin-left: 10%;
+			background: #5da4d9;
+			color: white;
+            }
+
+ h1.name{
+            font-size: 2vw;
+            color: white;
+            margin-bottom: -10px;
+            margin-left: -30px;
+            }
+
+ h1.heading{
+            color: black;
+            font-size: 3vw;
+            }
+
+img {
+			width: 100%;
+            }
+
+.sidebar-top { position: relative;
+                }
+
+.profile-basic {
+			position: absolute;
+			bottom: 0px;
+			left: 50px;
+		    }
+
+.profile-info {
+			padding: 20px 10px;
+			border-bottom: 1px solid #4783c2;
+		    }
+
+.profile-info p {
+			margin-left: 10px;
+			display: inline-block;
+			vertical-align: top;
+            font-size: 0.85vw;
+		    }
+
+.profile-info .key {
+			font-weight: bold;	
+            font-size: 0.85vw;
+            }
+
+.profile-info .value {
+		2
+        }
+
+.content {
+			width: 48%;
+			margin-left: 2%;
+			display: inline-block;
+			vertical-align: top;
+            }
+
+.work-experience{
+			margin-bottom: 30px;
+			padding: 5% 2% 5% 10%;
+			background: white;
+            margin: auto;
+            height: 550px;
+            width: 800px;
+			box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+            }
+
+.info {
+			padding: 2% 1%;
+			border-bottom: 1px solid #bdbdbd;
+            font-size: 0.85vw;
+			display: inline-block;
+            }
+    
+
+.sub-heading { 
+        font-weight: bold;       
+        }
+
+.duration {
+			color: #5da4d9;
+			font-size:12px;
+            }
+
+#goBack {
+   background-color: white;
+    border: none;
+    color: #5da4d9;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+#goBack:hover { 
+     background-color: #5da4d9 !important;
+    border: 1px solid white !important;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#editText {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+/*    margin-left: 10px;*/
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+#saveChanges {
+     background-color: white;
+    border: 1px solid black;
+    color: black;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-left: 10px;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
