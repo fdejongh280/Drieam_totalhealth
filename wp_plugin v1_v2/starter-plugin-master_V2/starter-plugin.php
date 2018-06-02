@@ -169,6 +169,7 @@ echo '
 			</div>
 			<button id = "goBack" class = "btn">Terug</button>
 		</div>
+        
 		<div class="content">
 			<div class="work-experience">
 				<h1 class="heading"> Masseuse</h1>
