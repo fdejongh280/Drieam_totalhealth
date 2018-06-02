@@ -49,72 +49,100 @@ function cas()
 		$response = wp_remote_get($url);
 		$xml = wp_remote_retrieve_body($response);
 		$user = strip_tags($xml);
- 		error_log( print_r($xml, TRUE) );
 		 
 			if (strpos($user, '@') !== false) {
 				// split response into valid username
 				$user = explode('@',$user,2);
 				$user = $user[1]; 
 				$_SERVER['user'] = $user;
-				error_log($_SERVER['user']);
 			}
 			else{
 				fetchNewTicket($ticketUrl);
 			}
 	}
 }
-	function fetchNewTicket($ticketUrl)
-	{
-		   echo '<script>location.href="http://total-health.testing.edufra.me/cas/login?service=' .$ticketUrl.'";</script>';
-	}
+function fetchNewTicket($ticketUrl)
+{
+	echo '<script>location.href="http://total-health.testing.edufra.me/cas/login?service=' .$ticketUrl.'";</script>';
+}
+function custom_post_type()
+{
+	$labels = array(
+			'name' => 'Alumni',
+			'singular_name' => 'Alumni',
+			'add_new' => 'Add Item',
+			'all_items' => 'All Items',
+			'add_new_item' => 'Add Item',
+			'edit_item' => 'Edit Item',
+			'new_item' => 'New Item',
+			'view_item' => 'View Item',
+			'search_item' => 'Zoek Alumni',
+			'not_found' => 'No items found',
+			'not_found_in_trash' => 'No items found in trash',
+			'parent_item_colon' => 'Parent Item'
+		);
+		$args = array(
+			'labels' => $labels,
+			'public' => true,
+			'has_archive' => true,
+			'publicly_queryable' => true,
+			'query_var' => true,
+			'rewrite' => true,
+			'capability_type' => 'post',
+			'hierarchical' => false,
+			'supports' => array(
+				'title',
+				'editor',
+				'thumbnail',
+				'revisions',
+			),
+			'taxonomies' => array('category', 'post_tag'),
+			'menu_position' => 5,
+			'exclude_from_search' => false
+		);
+		register_post_type('Alumni',$args);
+}
+add_action('init','custom_post_type');
 
 add_action( 'wp_footer', 'functionX' );
 
+
     function functionX () {
 		cas();
-		$auth = "f00c7fadeab67e69bc6e0f0dc0d1edf8";
-		$headers = array(
-			'Authorization' => 'Bearer ' . $auth 
-		);
-		$request = array(
-			'headers' => $headers,
-			'method'  => "GET",
-		);
-		$response = wp_remote_request("http://total-health.testing.edufra.me/api/v1/customers?include=address", $request);
-		$json = wp_remote_retrieve_body($response);
 if(isset($_SERVER['user']))
 {
 echo '
-
-
-<header role="banner" class="column-xs main-xs-center">
+<body id = "custombody">
+<header id="zoekfunctie" role="banner" class="column-xs main-xs-center">
 
     <form id="locator" class="container column-xs row-md cross-xs-stretch cross-md-end" action="">
         <div class="col">
-        <label for="locator_text">Zoeken op postcode of woonplaats</label>
+        <label id = "zoekveld" for="locator_text">Zoeken op postcode of woonplaats</label>
         <input type="text" id="searchTextField" name="searchTextField" placeholder="Zoek op postcode of woonplaats" required>
         </div>
-    <div class="col-xs-two-thirds col-md-quarter">
-    <label for="locator_radius">Astand</label>
+    <div id = "searchOptionsContainer" class="col-xs-two-thirds col-md-quarter">
+	<br />
+    <label id = "zoekveld" for="locator_radius">Astand</label>
         <select id="locator_radius" name="locator_radius">
-            <option value="25">25 km</option>
-            <option value="50">50 km</option>
-            <option value="100">100 km</option>
-            <option value="125">125 km</option>
-            <option value="150">150 km</option>
-            <option value="400">Toon alles</option>
+            <option id= "afstand" value="25">25 km</option>
+            <option id= "afstand" value="50">50 km</option>
+            <option id= "afstand" value="100">100 km</option>
+            <option id= "afstand" value="125">125 km</option>
+            <option id= "afstand" value="150">150 km</option>
+            <option id= "afstand" value="400">Toon alles</option>
         </select>
     </div>
-    <button type="submit">zoeken</button>
+    <button id = "zoeken" type="submit">zoeken</button>
     </form>
 </header>
-    
+</body>
 <aside id="map"></aside>
 <main id="results"></main>
 <div class="alumnicontainer">
 		<div class="sidebar">
 			<div class="sidebar-top">
-				<img class="profile-image" src="http://www.slate.com/content/dam/slate/blogs/xx_factor/2014/susan.jpg.CROP.promo-mediumlarge.jpg" />
+				<input type="file" style="display: none;" name="fileToUpload" id="fileToUpload">
+				<img class="profile-image" src="https://i.stack.imgur.com/l60Hf.png" />
 				<div class="profile-basic">
 					<h1 class="name"></h1>
 				</div>
@@ -125,11 +153,12 @@ echo '
                 <p class="key">Telefoon:</p>
 				<p class="value" id = "tel"></p><br>
                 <p class="key">Adres:</p>
-				<p class="value" id = "address">
-				</p>
+				<p class="value" id = "address"></p>
+				<br />
                 <p class="key">Afgeronde cursussen:</p>
 				<p class="value" id = "cources"></p><br>
 			</div>
+			<button id = "goBack" class = "btn">Terug</button>
 		</div>
 		<div class="content">
 			<div class="work-experience">
@@ -141,11 +170,13 @@ echo '
                     
                     <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
 				</div>
+				<button id = "editText" style="display: none; ">Text bewerken</button>
+				<button id = "saveChanges" style="display: none;">Bewerking opslaan</button>
 			</div>
 		</div>
 	</div>
-	<script>var jsonData = '.json_encode($response).'; var loggedInUser = '.json_encode($_SERVER["user"]).';</script>
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+	<script>var loggedInUser = '.json_encode($_SERVER["user"]).';</script>
+    <script  src = "https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFW3vAkUm_7An5IWXslzqQci7Y1rT_9C0&language=nl&libraries=geometry,places"></script>
     <script  src="wp-content/plugins/starter-plugin-master/index.js"></script>
     <link rel="stylesheet" type="text/css" href="wp-content/plugins/starter-plugin-master/style.css">
@@ -155,14 +186,108 @@ echo '
 
 	} 
 
-// include custom jQuery
-function shapeSpace_include_custom_jquery() {
+function test_ajax_load_scripts() {
+	// load our jquery file that sends the $.post request
+	wp_enqueue_script( "ajax-test", plugin_dir_url( __FILE__ ) . '/index.js', array( 'jquery' ) );
+ 
+	// make the ajaxurl var available to the above script
+	wp_localize_script( 'ajax-test', 'the_ajax_script', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );	
+}
 
-	//wp_deregister_script('jquery');
-	//wp_enqueue_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js', array(), null, true);
+add_action('wp_print_scripts', 'test_ajax_load_scripts');
+remove_action('pre_post_update', 'wp_save_post_revision');// stop revisions
+
+function text_ajax_process_request() {
+	// first check if data is being sent and that it is the data we want
+	error_log(print_r("iets", TRUE));
+	$post_id = "";
+  	if ( isset( $_POST["text"] ) ) {
+		$my_query = new WP_Query( array( 'post_type' => 'Alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
+		if( $my_query->have_posts()) {
+			$post = array();
+			$post['ID'] 				= $my_query->posts[0]->ID;
+			$post['post_title']         = $_POST['title'];
+			$post['post_content']       = $_POST['text'];
+			$post['post_type']      = 'Alumni';
+			wp_update_post($post);
+			$post_id = $post['ID'];
+			echo 'tekst geupdate';
+		}
+		else{
+			$post = array();
+			$post['post_title']         = $_POST['title'];
+			$post['post_content']       = $_POST['text'];
+			$post['post_type']      = 'Alumni';
+			$postID                 = wp_insert_post($post);
+			add_post_meta($postID, 'alumni_author_id', $_POST['id']);
+			$post_id = $postID;
+			echo 'tekst in de database gestopt';
+		}
+		if(isset($_FILES['image'] ) ) {
+			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+			require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+			$file_handler = 'image';
+			$attach_id = media_handle_upload($file_handler,$post_id );
+			update_post_meta($post_id,'_thumbnail_id',$attach_id);
+		}
+
+	}
+			die();
 
 }
 
+add_action('wp_ajax_test_response', 'text_ajax_process_request');
+add_action('wp_ajax_nopriv_test_response', 'text_ajax_process_request');
+
+function get_alumni_content_process_request() {
+	// first check if data is being sent and that it is the data we want
+	  if ( isset( $_POST["id"] ) ) {
+		$my_query = new WP_Query( array( 'post_type' => 'Alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
+	  }
+	  if( $my_query->have_posts())
+	  {
+		$post_data = $my_query->posts[0];
+		$thumb_id = get_post_thumbnail_id($post_data->ID);
+		$data_response[] = $post_data;
+		error_log(print_r($thumb_id, TRUE));
+		if($thumb_id)
+		{
+			$thumb_url = wp_get_attachment_image_src($thumb_id,'thumbnail-size', true);
+			$data_response[] = $thumb_url[0];
+		}
+		echo (json_encode($data_response));
+	  }else {
+		  echo "false";
+	  }
+
+	  die();
+		
+}
+add_action('wp_ajax_get_alumni_content', 'get_alumni_content_process_request');
+add_action('wp_ajax_nopriv_get_alumni_content', 'get_alumni_content_process_request');
+
+
+function get_json_data_process_request() {
+		$auth = "f00c7fadeab67e69bc6e0f0dc0d1edf8";
+		$headers = array(
+			'Authorization' => 'Bearer ' . $auth 
+		);
+		$request = array(
+			'headers' => $headers,
+			'method'  => "GET",
+		);
+		$responses = [];
+		$getCustomersForMap = wp_remote_request("http://total-health.testing.edufra.me/api/v1/customers?include=address", $request);
+		$getPassedCources = wp_remote_request("http://total-health.testing.edufra.me/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
+		$getEnrollments = wp_remote_request("http://total-health.testing.edufra.me/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
+
+		array_push($responses, $getCustomersForMap, $getPassedCources, $getEnrollments);
+		echo wp_send_json($responses);
+		die();
+}
+add_action('wp_ajax_get_json_data', 'get_json_data_process_request');
+add_action('wp_ajax_nopriv_get_json_data', 'get_json_data_process_request');
 
 /**
  * Main Starter_Plugin Class
