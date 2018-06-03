@@ -10,7 +10,8 @@ loggedInUser = 'floris@dynamixpixel.nl'//loggedInUser.trim();
     };
     $.get(the_ajax_script.ajaxurl, data, function(response) {
       var dataForMap = JSON.parse(response[0].body); 
-      //var cources = JSON.parse(response[1].body);
+      var cources = JSON.parse(response[1].body);
+      console.log(cources);
      // var enrollments = JSON.parse(response[2].body);
             console.log(dataForMap);
 
@@ -31,7 +32,6 @@ loggedInUser = 'floris@dynamixpixel.nl'//loggedInUser.trim();
                   locations.push([(item.first_name +" "+ middleName +" "+item.last_name),results[0].geometry.bounds.f.b,results[0].geometry.bounds.b.b, item.address.address, item.address.postal_code, item.address.city, item.email, item.id, phone]);
                 if(item == dataForMap[dataForMap.length -1])
                 {
-                  console.log('done');
                   excecuteAddMarkersLoop();
                 }
         });
@@ -182,6 +182,7 @@ loggedInUser = 'floris@dynamixpixel.nl'//loggedInUser.trim();
               $.post(the_ajax_script.ajaxurl, data, function(response) {
                 
                 var jsonResponse = JSON.parse(response);
+                console.log(jsonResponse);
                 if(jsonResponse != "" && jsonResponse != "false")
                 {
                   if(jsonResponse.length > 1)
@@ -194,11 +195,13 @@ loggedInUser = 'floris@dynamixpixel.nl'//loggedInUser.trim();
                     .attr('src', "https://i.stack.imgur.com/l60Hf.png");
                   }
                   $('.alumnicontainer .content .info').text(jsonResponse[0].post_content);
-                  $('.alumnicontainer .content .heading').text(jsonResponse[0].heading);
+                  $('.alumnicontainer .content .heading').text(jsonResponse[0].post_title);
                 }
                 else{
                   $('.alumnicontainer .content .info').text('Heeft nog geen biografie toegevoegd');
                   $('.alumnicontainer .content .heading').text("Nog geen expertise toegevoegd");
+                   $('.alumnicontainer .sidebar .sidebar-top .profile-image ')
+                    .attr('src', "https://i.stack.imgur.com/l60Hf.png");
                 }
                      toggleViews();
               });

@@ -250,14 +250,14 @@ function get_alumni_content_process_request() {
 		$post_data = $my_query->posts[0];
 		$thumb_id = get_post_thumbnail_id($post_data->ID);
 		$data_response[] = $post_data;
-
+		error_log(print_r($thumb_id, TRUE));
 		if($thumb_id)
 		{
 			$thumb_url = wp_get_attachment_image_src($thumb_id,'thumbnail-size', true);
 			$data_response[] = $thumb_url[0];
 		}
 		echo (json_encode($data_response));
-	  }else{
+	  }else {
 		  echo "false";
 	  }
 
@@ -289,71 +289,6 @@ function get_json_data_process_request() {
 add_action('wp_ajax_get_json_data', 'get_json_data_process_request');
 add_action('wp_ajax_nopriv_get_json_data', 'get_json_data_process_request');
 
-
-//add_action( 'wp_head', 'Links');
-/*
-function Links () {
-    echo '
-            <head>
-            <meta charset="UTF-8">
-            <aside id="map"></aside>
-<main id="results"></main>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFW3vAkUm_7An5IWXslzqQci7Y1rT_9C0&language=nl&libraries=geometry,places"></script>
-    <script  src="js/index.js"></script>
-            <!-- zoekwoord -->
-            </head>
-    ';
-}
-*/
-/*
- wp_enqueue_script('index.js');
-wp_enqueue_script('style.css');
-*/
-
-/*
-function wpdocs_theme_name_scripts() {
-    wp_enqueue_style( 'style.css', get_stylesheet_uri('style.css') );
-    wp_enqueue_script( 'index.js', get_template_directory_uri() . 'index.js', array(), '1.0.0', true );
-}
-add_action( 'wp_enqueue_scripts', 'wpdocs_theme_name_scripts' );
-
-
-
-function theme_name_scripts() {
-
-
-  wp_enqueue_style( 'style-css',get_template_directory_uri() . '/style.css' );
-    
-    
-    
-  wp_enqueue_script( 'jquery-script', get_template_directory_uri() . '/index.js', array(), '1.0.0', true );
-    
-    wp_enqueue_script( 'jquery-script', get_template_directory_uri() . '/https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css', array(), '1.0.0', true );
-    wp_enqueue_script( 'google-font', get_template_directory_uri() . '/https://fonts.googleapis.com/css?family=Montserrat:400,700', array(), '1.0.0', true );
-    wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/https://anacoelhovicente.github.io/tangerine/dist/tangerine-grid.min.css', array(), '1.0.0', true );
-    
-    wp_enqueue_script( 'jquery', get_template_directory_uri() . '/https://code.jquery.com/jquery-2.2.4.min.js', array(), '1.0.0', true );
-    wp_enqueue_script( 'google-api', get_template_directory_uri() . '/https://maps.googleapis.com/maps/api/js?key=AIzaSyAFW3vAkUm_7An5IWXslzqQci7Y1rT_9C0&language=nl&libraries=geometry,places', array(), '1.0.0', true );
-
-
-}
-
-add_action( 'wp_enqueue_scripts', 'theme_name_scripts' );
-*/
-/*
-function admin_assets() 
-        {    
-            wp_enqueue_media();
-            wp_register_script('los_admin_js', script_uri(__FILE__, 'wp-content/plugins/starter-plugin-master/index.js'), ['jquery'], $this->script_version, false);
-            wp_register_style('los_admin_css', stylesheet_uri(__FILE__, 'style.css'), false, $this->style_version, 'screen');
-            wp_register_style('google-api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAFW3vAkUm_7An5IWXslzqQci7Y1rT_9C0&language=nl&libraries=geometry,places', false);
-            
-            wp_enqueue_script('los_admin_js');
-            wp_enqueue_style('los_admin_css');
-            wp_enqueue_style('google-api');
-        };
-*/
 /**
  * Main Starter_Plugin Class
  *

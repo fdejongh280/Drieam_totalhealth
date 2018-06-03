@@ -151,19 +151,20 @@
 }
 
 #map.active {
-  width: 50vw
+  display: block;
+  float: left;
+  width: 50%;
 }
 
 #results {
-  bottom: 0;
-  display: block;
+  /*bottom: 0;
+  display: block;*/
   height: calc(100vh - 600px);
   min-height: 300px;
   overflow-y: auto;
   padding: 0 15px;
-  position: absolute;
+  /*position: absolute;*/
   right: -50vw;
-  width: 50vw;
   -webkit-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
 }
