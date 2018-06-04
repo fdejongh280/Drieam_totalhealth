@@ -2,17 +2,17 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Starter_Plugin_Admin Class
+ * Alumni_Zoekfunctie_Admin Class
  *
- * @class Starter_Plugin_Admin
+ * @class Alumni_Zoekfunctie_Admin
  * @version	1.0.0
  * @since 1.0.0
- * @package	Starter_Plugin
- * @author Jeffikus
+ * @package	Alumni_Zoekfunctie
+ * @author Elwin van den Eijnden & Floris de Jongh
  */
-final class Starter_Plugin_Admin {
+final class Alumni_Zoekfunctie_Admin {
 	/**
-	 * Starter_Plugin_Admin The single instance of Starter_Plugin_Admin.
+	 * Alumni_zoekfunctie_Admin The single instance of Alumni_Zoekfuntie_Admin.
 	 * @var 	object
 	 * @access  private
 	 * @since 	1.0.0
@@ -41,13 +41,13 @@ final class Starter_Plugin_Admin {
 	} // End __construct()
 
 	/**
-	 * Main Starter_Plugin_Admin Instance
+	 * Main Alumni_Zoekfuntie_Admin Instance
 	 *
-	 * Ensures only one instance of Starter_Plugin_Admin is loaded or can be loaded.
+	 * Ensures only one instance of Alumni_Zoekfuntie_Admin is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @return Main Starter_Plugin_Admin instance
+	 * @return Main Alumni_Zoekfuntie_Admin instance
 	 */
 	public static function instance () {
 		if ( is_null( self::$_instance ) )
@@ -62,7 +62,7 @@ final class Starter_Plugin_Admin {
 	 * @return  void
 	 */
 	public function register_settings_screen () {
-		$this->_hook = add_submenu_page( 'options-general.php', __( 'Starter Plugin Settings', 'starter-plugin' ), __( 'Starter Plugin', 'starter-plugin' ), 'manage_options', 'starter-plugin', array( $this, 'settings_screen' ) );
+		$this->_hook = add_submenu_page( 'options-general.php', __( 'Alumni Zoekfuntie Settings', 'alumni-zoekfuntie' ), __( 'Alumni Zoekfuntie', 'alumni-zoekfuntie' ), 'manage_options', 'alumni-zoekfuntie', array( $this, 'settings_screen' ) );
 	} // End register_settings_screen()
 
 	/**
@@ -73,18 +73,18 @@ final class Starter_Plugin_Admin {
 	 */
 	public function settings_screen () {
 		global $title;
-		$sections = Starter_Plugin()->settings->get_settings_sections();
+		$sections = Alumni_Zoekfuntie()->settings->get_settings_sections();
 		$tab = $this->_get_current_tab( $sections );
 		?>
-		<div class="wrap starter-plugin-wrap">
+		<div class="wrap alumni-zoekfuntie-wrap">
 			<?php
 				echo $this->get_admin_header_html( $sections, $title );
 			?>
 			<form action="options.php" method="post">
 				<?php
-					settings_fields( 'starter-plugin-settings-' . $tab );
-					do_settings_sections( 'starter-plugin-' . $tab );
-					submit_button( __( 'Save Changes', 'starter-plugin' ) );
+					settings_fields( 'alumni-zoekfuntie-settings-' . $tab );
+					do_settings_sections( 'alumni-zoekfuntie-' . $tab );
+					submit_button( __( 'Save Changes', 'alumni-zoekfuntie' ) );
 				?>
 			</form>
 		</div><!--/.wrap-->
@@ -98,11 +98,11 @@ final class Starter_Plugin_Admin {
 	 * @return  void
 	 */
 	public function register_settings () {
-		$sections = Starter_Plugin()->settings->get_settings_sections();
+		$sections = Alumni_Zoekfuntie()->settings->get_settings_sections();
 		if ( 0 < count( $sections ) ) {
 			foreach ( $sections as $k => $v ) {
-				register_setting( 'starter-plugin-settings-' . sanitize_title_with_dashes( $k ), 'starter-plugin-' . $k, array( $this, 'validate_settings' ) );
-				add_settings_section( sanitize_title_with_dashes( $k ), $v, array( $this, 'render_settings' ), 'starter-plugin-' . $k, $k, $k );
+				register_setting( 'alumni-zoekfuntie-settings-' . sanitize_title_with_dashes( $k ), 'alumni-zoekfuntie-' . $k, array( $this, 'validate_settings' ) );
+				add_settings_section( sanitize_title_with_dashes( $k ), $v, array( $this, 'render_settings' ), 'alumni-zoekfuntie-' . $k, $k, $k );
 			}
 		}
 	} // End register_settings()
@@ -116,14 +116,14 @@ final class Starter_Plugin_Admin {
 	 */
 	public function render_settings ( $args ) {
 		$token = $args['id'];
-		$fields = Starter_Plugin()->settings->get_settings_fields( $token );
+		$fields = Alumni_Zoekfuntie()->settings->get_settings_fields( $token );
 
 		if ( 0 < count( $fields ) ) {
 			foreach ( $fields as $k => $v ) {
 				$args 		= $v;
 				$args['id'] = $k;
 
-				add_settings_field( $k, $v['name'], array( Starter_Plugin()->settings, 'render_field' ), 'starter-plugin-' . $token , $v['section'], $args );
+				add_settings_field( $k, $v['name'], array( Alumni_Zoekfuntie()->settings, 'render_field' ), 'alumni-zoekfuntie-' . $token , $v['section'], $args );
 			}
 		}
 	} // End render_settings()
@@ -136,9 +136,9 @@ final class Starter_Plugin_Admin {
 	 * @return  array        Validated data.
 	 */
 	public function validate_settings ( $input ) {
-		$sections = Starter_Plugin()->settings->get_settings_sections();
+		$sections = Alumni_Zoekfuntie()->settings->get_settings_sections();
 		$tab = $this->_get_current_tab( $sections );
-		return Starter_Plugin()->settings->validate_settings( $input, $tab );
+		return Alumni_Zoekfuntie()->settings->validate_settings( $input, $tab );
 	} // End validate_settings()
 
 	/**
@@ -152,7 +152,7 @@ final class Starter_Plugin_Admin {
 	public function get_admin_header_html ( $sections, $title ) {
 		$defaults = array(
 							'tag' => 'h2',
-							'atts' => array( 'class' => 'starter-plugin-wrapper' ),
+							'atts' => array( 'class' => 'alumni-zoekfuntie-wrapper' ),
 							'content' => $title
 						);
 
@@ -203,7 +203,7 @@ final class Starter_Plugin_Admin {
 	 * @return  array 			 An array of data with which to mark up the header HTML.
 	 */
 	private function _get_admin_header_data ( $sections, $title ) {
-		$response = array( 'tag' => 'h2', 'atts' => array( 'class' => 'starter-plugin-wrapper' ), 'content' => $title );
+		$response = array( 'tag' => 'h2', 'atts' => array( 'class' => 'alumni-zoekfuntie-wrapper' ), 'content' => $title );
 
 		if ( is_array( $sections ) && 1 < count( $sections ) ) {
 			$response['content'] = '';
@@ -217,10 +217,10 @@ final class Starter_Plugin_Admin {
 					$class .= ' nav-tab-active';
 				}
 
-				$response['content'] .= '<a href="' . admin_url( 'options-general.php?page=starter-plugin&tab=' . sanitize_title_with_dashes( $key ) ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $value ) . '</a>';
+				$response['content'] .= '<a href="' . admin_url( 'options-general.php?page=alumni-zoekfuntie&tab=' . sanitize_title_with_dashes( $key ) ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $value ) . '</a>';
 			}
 		}
 
-		return (array)apply_filters( 'starter-plugin-get-admin-header-data', $response );
+		return (array)apply_filters( 'alumni-zoekfuntie-get-admin-header-data', $response );
 	} // End _get_admin_header_data()
 } // End Class
