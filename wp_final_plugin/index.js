@@ -1,5 +1,7 @@
 jQuery(document).ready(function(){
-  loggedInUser = 'floris@dynamixpixel.nl'//loggedInUser.trim();
+  var loggedInUser;
+
+
   var markers = [];
   var in_area = [];
   var alumni;
@@ -12,7 +14,8 @@ jQuery(document).ready(function(){
    jQuery.get(the_ajax_script.ajaxurl, data, function(response) {
       var dataForMap = JSON.parse(response[0].body); 
       var courses = JSON.parse(response[1].body);
-      //console.log(courses);
+
+      console.log(courses);
      // var enrollments = JSON.parse(response[2].body);
 
 function delay()
@@ -202,10 +205,10 @@ processArray()
                 var jsonResponse = JSON.parse(response);
                 if(jsonResponse != "" && jsonResponse != "false")
                 {
-                  if(jsonResponse.length > 1)
+                  if(jsonResponse.length > 2)
                   {
                      jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
-                    .attr('src', jsonResponse[1]);
+                    .attr('src', jsonResponse[2]);
                   }
                   else{
                   jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
@@ -220,18 +223,20 @@ processArray()
                    jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
                     .attr('src', "https://i.stack.imgur.com/l60Hf.png");
                 }
+                //loggedInUser = jsonResponse[1].trim();
                      toggleViews();
+                  if(loggedInUser == alumni[6]) // for test purpose condition is set to != 
+                  {
+                      jQuery('#editText').removeAttr('style');
+                      jQuery('#fileToUpload').removeAttr('style');
+                      jQuery('#editText').on('click', function(){
+                      jQuery('.alumnicontainer .content .heading').attr('contentEditable',true);
+                      jQuery('.alumnicontainer .content .info').attr('contentEditable',true);
+                      jQuery('#saveChanges').removeAttr('style');
+                    });
+                  }
               });
-        if(loggedInUser == alumni[6]) // for test purpose condition is set to != 
-        {
-            jQuery('#editText').removeAttr('style');
-            jQuery('#fileToUpload').removeAttr('style');
-            jQuery('#editText').on('click', function(){
-            jQuery('.alumnicontainer .content .heading').attr('contentEditable',true);
-            jQuery('.alumnicontainer .content .info').attr('contentEditable',true);
-            jQuery('#saveChanges').removeAttr('style');
-          });
-        }
+
 }
 jQuery('.alumnicontainer #goBack').on('click', function(){
   toggleViews();

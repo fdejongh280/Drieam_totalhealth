@@ -30,43 +30,55 @@ function Starter_Plugin() {
 } // End Starter_Plugin()
 
 add_action( 'plugins_loaded', 'Starter_Plugin' );
+add_filter( 'allowed_http_origin', '__return_true' );
 
+		function cas()
+			{
+				if(!isset($logged_user))
+				{
 
-//add_action('wp_footer','cas');
-// function cas()
-// {
-// 	$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-// 	$ticketUrl = 'http://' . $_SERVER['HTTP_HOST'] . $uri_parts[0];
-// 	if(!isset($_GET['ticket']) && empty($_GET['ticket'])){
-		
-// 		fetchNewTicket($ticketUrl);
-// 	} else {
-// 		$url = "http://total-health.testing.edufra.me/cas/proxyValidate.xml?service=".$ticketUrl."&ticket=" .$_GET['ticket'];
-// 		$response = wp_remote_get($url);
-// 		$xml = wp_remote_retrieve_body($response);
-// 		$user = strip_tags($xml);
-		 
-// 			if (strpos($user, '@') !== false) {
-// 				// split response into valid username
-// 				$user = explode('@',$user,2);
-// 				$user = $user[1]; 
-// 				$_SERVER['user'] = $user;
-// 			}
-// 			else{
-// 				fetchNewTicket($ticketUrl);
-// 			}
-// 	}
-// }
-// function fetchNewTicket($ticketUrl)
-// {
-//  //header('Access-Control-Allow-Origin: *');  	wp_redirect("http://total-health.testing.edufra.me/cas/login?service=" .$ticketUrl);
-// 	echo '<script>location.href="http://total-health.testing.edufra.me/cas/login?service=' .$ticketUrl.'";</script>';
-// }
-// add_action('init','cas');
+					$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+					$ticketUrl = 'http://' . $_SERVER['HTTP_HOST'] . $uri_parts[0];
+					if(!isset($_GET['ticket']) && empty($_GET['ticket'])){
+						
+						fetchNewTicket($ticketUrl);
+					} 
+					else {
+						$url = "http://total-health.testing.edufra.me/cas/proxyValidate.xml?service=".$ticketUrl."&ticket=" .$_GET['ticket'];
+						$response = wp_remote_get($url);
+						$xml = wp_remote_retrieve_body($response);
+						$user = strip_tags($xml);
+						//error_log($user);
 
+							if (strpos($user, '@') !== false) {
+
+								// split response into valid username
+								$user = explode('@',$user,2);
+								$user = $user[1]; 
+								wp_cache_set( "cas_user", $user);
+								error_log(wp_cache_get('cas_user'));
+								error_log("---------------");
+
+							}
+							else{
+								fetchNewTicket($ticketUrl);
+							}
+					}
+				}
+			}
+			function fetchNewTicket($ticketUrl)
+			{
+				wp_redirect("http://total-health.testing.edufra.me/cas/login?service=" .$ticketUrl, $status = 301);
+				exit();
+ 			}
+			add_action( 'send_headers', 'add_header_acc' );
+			function add_header_acc() {
+				header( 'Access-Control-Allow-Origin: *' );
+				cas();
+			}
 
 function custom_post_type()
-{
+{ 
 	$labels = array(
 			'name' => 'Alumni',
 			'singular_name' => 'Alumni',
@@ -115,7 +127,6 @@ add_action( 'widgets_init', function () {
 
 function text_ajax_process_request() {
 	// first check if data is being sent and that it is the data we want
-	error_log(print_r("iets", TRUE));
 	$post_id = "";
   	if ( isset( $_POST["text"] ) ) {
 		$my_query = new WP_Query( array( 'post_type' => 'Alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
@@ -166,7 +177,7 @@ function get_alumni_content_process_request() {
 		$post_data = $my_query->posts[0];
 		$thumb_id = get_post_thumbnail_id($post_data->ID);
 		$data_response[] = $post_data;
-		error_log(print_r($thumb_id, TRUE));
+
 		if($thumb_id)
 		{
 			$thumb_url = wp_get_attachment_image_src($thumb_id,'thumbnail-size', true);
@@ -185,6 +196,7 @@ add_action('wp_ajax_nopriv_get_alumni_content', 'get_alumni_content_process_requ
 
 
 function get_json_data_process_request() {
+		error_log(wp_cache_get('cas_user'));
 		$auth = "f00c7fadeab67e69bc6e0f0dc0d1edf8";
 		$headers = array(
 			'Authorization' => 'Bearer ' . $auth 
@@ -197,7 +209,6 @@ function get_json_data_process_request() {
 		$getCustomersForMap = wp_remote_request("http://total-health.testing.edufra.me/api/v1/customers?include=address", $request);
 		$getPassedCources = wp_remote_request("http://total-health.testing.edufra.me/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
 		$getEnrollments = wp_remote_request("http://total-health.testing.edufra.me/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
-
 		array_push($responses, $getCustomersForMap, $getPassedCources, $getEnrollments);
 		echo wp_send_json($responses);
 		die();
@@ -205,6 +216,9 @@ function get_json_data_process_request() {
 add_action('wp_ajax_get_json_data', 'get_json_data_process_request');
 add_action('wp_ajax_nopriv_get_json_data', 'get_json_data_process_request');
 
+
+
+			//add_action('plugins_loaded', "cas");
 /**
  * Main Starter_Plugin Class
  *

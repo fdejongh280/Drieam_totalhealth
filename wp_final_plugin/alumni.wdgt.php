@@ -121,8 +121,6 @@ class Alumni_Widget extends WP_Widget {
 		<?php
 
 		echo $args['after_widget'];
-		cas();
-
 
 	}
 
@@ -162,7 +160,7 @@ class Alumni_Widget extends WP_Widget {
 	 *
 	 * @return string Output buffer containing the widget output.
 	 */
-	public function shortcode( $attributes ) {
+	public static function shortcode( $attributes ) {
 
 		// Shortcode id necessary to identify table in javascript
 		STATIC $i = 1;
@@ -205,34 +203,4 @@ function test_ajax_load_scripts() {
 }
 
 add_action('wp_enqueue_scripts', 'test_ajax_load_scripts');
-
-		function cas()
-			{
-				$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-				$ticketUrl = 'http://' . $_SERVER['HTTP_HOST'] . $uri_parts[0];
-				if(!isset($_GET['ticket']) && empty($_GET['ticket'])){
-					
-					fetchNewTicket($ticketUrl);
-				} else {
-					$url = "http://total-health.testing.edufra.me/cas/proxyValidate.xml?service=".$ticketUrl."&ticket=" .$_GET['ticket'];
-					$response = wp_remote_get($url);
-					$xml = wp_remote_retrieve_body($response);
-					$user = strip_tags($xml);
-					
-						if (strpos($user, '@') !== false) {
-							// split response into valid username
-							$user = explode('@',$user,2);
-							$user = $user[1]; 
-							$_SERVER['user'] = $user;
-						}
-						else{
-							fetchNewTicket($ticketUrl);
-						}
-				}
-			}
-			function fetchNewTicket($ticketUrl)
-			{
-			//header('Access-Control-Allow-Origin: *');  	wp_redirect("http://total-health.testing.edufra.me/cas/login?service=" .$ticketUrl);
-				echo '<script>location.href="http://total-health.testing.edufra.me/cas/login?service=' .$ticketUrl.'";</script>';
-			}
 
