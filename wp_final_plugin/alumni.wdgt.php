@@ -22,14 +22,19 @@ class Alumni_Widget extends WP_Widget {
 
 	private function scripts() {
 
-		// Add scripts needed for the widget here
-
-//		wp_enqueue_script(
-//			'datatables',
-//			"https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js",
-//			array( 'jquery' ),
-//			'1.10.7'
-//		);
+	wp_register_style( 'styleForMap',  plugin_dir_url( __FILE__ ) . '/style.css' );
+	wp_enqueue_style('styleForMap');
+	wp_register_style( 'styleForAlumniPage',  plugin_dir_url( __FILE__ ) . '/style2.css' );
+	wp_enqueue_style('styleForAlumniPage');
+	// JS loading ------------------------------------------------------------------
+  	// wp_deregister_script('jquery');
+  	// wp_register_script('jquery', "https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js", false, null);
+   	wp_enqueue_script('jquery');
+	wp_register_script( "google", "https://maps.googleapis.com/maps/api/js?key=AIzaSyAFW3vAkUm_7An5IWXslzqQci7Y1rT_9C0&language=nl&libraries=geometry,places");
+	wp_enqueue_script('google');
+	wp_enqueue_script( "ajax-test", plugin_dir_url( __FILE__ ) . '/index.js', array( 'jquery' ) );
+	// make the ajaxurl var available to the above script
+	wp_localize_script( 'ajax-test', 'the_ajax_script', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );	
 	}
 
 	/**
@@ -53,7 +58,9 @@ class Alumni_Widget extends WP_Widget {
 		echo $args['before_widget'];
 
 		?>
-
+<!--[if lt IE 11]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
         <body id = "custombody">
 <header id="zoekfunctie" role="banner" class="column-xs main-xs-center">
 
@@ -97,8 +104,8 @@ class Alumni_Widget extends WP_Widget {
                 <p class="key">Adres:</p>
 				<p class="value" id = "address"></p>
 				<br />
-                <p class="key">Afgeronde cursussen:</p>
-				<p class="value" id = "cources"></p><br>
+                <!--<p class="key">Afgeronde cursussen:</p>
+				<p class="value" id = "courses"></p><br>-->
 			</div>
 			<button id = "goBack" class = "btn">Terug</button>
 		</div>
@@ -185,22 +192,10 @@ class Alumni_Widget extends WP_Widget {
 
 add_shortcode( 'eduframe_alumni', array( 'Alumni_Widget', 'shortcode' ) );
 
-function test_ajax_load_scripts() {
-	// CSS loading ------------------------------------------------------------------
-	wp_register_style( 'styleForMap',  plugin_dir_url( __FILE__ ) . '/style.css' );
-	wp_enqueue_style('styleForMap');
-	wp_register_style( 'styleForAlumniPage',  plugin_dir_url( __FILE__ ) . '/style2.css' );
-	wp_enqueue_style('styleForAlumniPage');
-	// JS loading ------------------------------------------------------------------
-  	// wp_deregister_script('jquery');
-  	// wp_register_script('jquery', "https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js", false, null);
-   	wp_enqueue_script('jquery');
-	wp_register_script( "google", "https://maps.googleapis.com/maps/api/js?key=AIzaSyAFW3vAkUm_7An5IWXslzqQci7Y1rT_9C0&language=nl&libraries=geometry,places");
-	wp_enqueue_script('google');
-	wp_enqueue_script( "ajax-test", plugin_dir_url( __FILE__ ) . '/index.js', array( 'jquery' ) );
-	// make the ajaxurl var available to the above script
-	wp_localize_script( 'ajax-test', 'the_ajax_script', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );	
-}
+// function test_ajax_load_scripts() {
+// 	// CSS loading ------------------------------------------------------------------
 
-add_action('wp_enqueue_scripts', 'test_ajax_load_scripts');
+// }
+
+//add_action('wp_enqueue_scripts', 'test_ajax_load_scripts');
 

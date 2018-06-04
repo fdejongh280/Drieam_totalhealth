@@ -16,7 +16,8 @@
  * @category Core
  * @author Matty
  */
-
+	require_once( 'alumni.wdgt.php' );
+  session_start();
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
@@ -29,16 +30,17 @@ function Starter_Plugin() {
 	return Starter_Plugin::instance();
 } // End Starter_Plugin()
 
+
 add_action( 'plugins_loaded', 'Starter_Plugin' );
 add_filter( 'allowed_http_origin', '__return_true' );
 
-		function cas()
+		function cas() // This function is called when the headers are send becase wp_redirect makes use of a header
 			{
-				if(!isset($logged_user))
+				if(!isset($_SESSION['alumni_user']))
 				{
-
+					//Construct ticketurl
 					$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-					$ticketUrl = 'http://' . $_SERVER['HTTP_HOST'] . $uri_parts[0];
+					$ticketUrl = 'http://' . $_SERVER['HTTP_HOST'] . $uri_parts[0]; 
 					if(!isset($_GET['ticket']) && empty($_GET['ticket'])){
 						
 						fetchNewTicket($ticketUrl);
@@ -48,17 +50,16 @@ add_filter( 'allowed_http_origin', '__return_true' );
 						$response = wp_remote_get($url);
 						$xml = wp_remote_retrieve_body($response);
 						$user = strip_tags($xml);
-						//error_log($user);
 
 							if (strpos($user, '@') !== false) {
 
 								// split response into valid username
 								$user = explode('@',$user,2);
 								$user = $user[1]; 
-								wp_cache_set( "cas_user", $user);
-								error_log(wp_cache_get('cas_user'));
-								error_log("---------------");
-
+								error_log("setuser starting");
+								
+								$_SESSION['alumni_user'] = $user;
+								
 							}
 							else{
 								fetchNewTicket($ticketUrl);
@@ -74,10 +75,11 @@ add_filter( 'allowed_http_origin', '__return_true' );
 			add_action( 'send_headers', 'add_header_acc' );
 			function add_header_acc() {
 				header( 'Access-Control-Allow-Origin: *' );
+				// Send allow cross domain header 
 				cas();
 			}
 
-function custom_post_type()
+function custom_post_type() // This function sets the custom post type
 { 
 	$labels = array(
 			'name' => 'Alumni',
@@ -116,7 +118,6 @@ function custom_post_type()
 }
 add_action('init','custom_post_type');
 
-	require_once( 'alumni.wdgt.php' );
 
 // Register the widgets to Wordpress.
 add_action( 'widgets_init', function () {
@@ -125,8 +126,7 @@ add_action( 'widgets_init', function () {
 
 
 
-function text_ajax_process_request() {
-	// first check if data is being sent and that it is the data we want
+function text_ajax_process_request() {// This function updates of inserts data provided by the ajax call
 	$post_id = "";
   	if ( isset( $_POST["text"] ) ) {
 		$my_query = new WP_Query( array( 'post_type' => 'Alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
@@ -167,8 +167,7 @@ function text_ajax_process_request() {
 add_action('wp_ajax_test_response', 'text_ajax_process_request');
 add_action('wp_ajax_nopriv_test_response', 'text_ajax_process_request');
 
-function get_alumni_content_process_request() {
-	// first check if data is being sent and that it is the data we want
+function get_alumni_content_process_request() { // Tis function sends back the content of an alumni from the database
 	  if ( isset( $_POST["id"] ) ) {
 		$my_query = new WP_Query( array( 'post_type' => 'Alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
 	  }
@@ -195,8 +194,8 @@ add_action('wp_ajax_get_alumni_content', 'get_alumni_content_process_request');
 add_action('wp_ajax_nopriv_get_alumni_content', 'get_alumni_content_process_request');
 
 
-function get_json_data_process_request() {
-		error_log(wp_cache_get('cas_user'));
+function get_json_data_process_request() { // This function sends back the data from the eduframe endpoint 
+
 		$auth = "f00c7fadeab67e69bc6e0f0dc0d1edf8";
 		$headers = array(
 			'Authorization' => 'Bearer ' . $auth 
@@ -209,7 +208,8 @@ function get_json_data_process_request() {
 		$getCustomersForMap = wp_remote_request("http://total-health.testing.edufra.me/api/v1/customers?include=address", $request);
 		$getPassedCources = wp_remote_request("http://total-health.testing.edufra.me/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
 		$getEnrollments = wp_remote_request("http://total-health.testing.edufra.me/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
-		array_push($responses, $getCustomersForMap, $getPassedCources, $getEnrollments);
+		$alumni_user = $_SESSION['alumni_user'];
+		array_push($responses, $getCustomersForMap, $getPassedCources, $getEnrollments, $alumni_user);
 		echo wp_send_json($responses);
 		die();
 }

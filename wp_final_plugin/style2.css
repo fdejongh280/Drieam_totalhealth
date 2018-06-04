@@ -1,9 +1,4 @@
-body {
-			background: #eae8e7;
-			color: #767270;
-			font-size: 14px;
-			font-family: verdana, sans-serif;
-		}
+
 		.alumnicontainer
 		{
 			/*position: absolute;*/
@@ -76,3 +71,10 @@ body {
 			color: #5da4d9;
 			font-size:12px;
 		}
+h1.name {
+   font-size: 1.25em;
+}
+
+h1.heading {
+   font-size: 1.25em;
+}

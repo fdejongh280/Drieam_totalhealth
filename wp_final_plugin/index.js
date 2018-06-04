@@ -1,7 +1,5 @@
 jQuery(document).ready(function(){
   var loggedInUser;
-
-
   var markers = [];
   var in_area = [];
   var alumni;
@@ -11,13 +9,14 @@ jQuery(document).ready(function(){
     var data = {
       action: 'get_json_data',
     };
-   jQuery.get(the_ajax_script.ajaxurl, data, function(response) {
+   jQuery.get(the_ajax_script.ajaxurl, data, function(response) { // Get data from endpoint
       var dataForMap = JSON.parse(response[0].body); 
       var courses = JSON.parse(response[1].body);
-
       console.log(courses);
-     // var enrollments = JSON.parse(response[2].body);
+      loggedInUser = response[3];
+      loggedInUser = loggedInUser.trim();//'floris@dynamixpixel.nl'
 
+//these functions including async functions preventt main thread from going further untill all data is fetched
 function delay()
 {
   return new Promise(resolve => setTimeout(resolve, 300));
@@ -31,12 +30,11 @@ async function processArray(array)
 {
   const promises = array.map(delayedLog);
   await Promise.all(promises);
-  excecuteAddMarkersLoop();
+  excecuteAddMarkersLoop(); // proceed main thread when array is filled
 }
-processArray()
 
 
-      dataForMap.forEach( async (item) => {
+      dataForMap.forEach( async (item) => { // Push all data to array
           await geocoder.geocode({
           'address': item.address.postal_code + " " + item.address.city
         }, function(results, status) {
@@ -62,15 +60,13 @@ processArray()
    {
      console.log(locations);
       for ( i = 0; i < locations.length; i++) {
-        add_marker(locations, i);
+        add_marker(locations, i); // Add markers on the google maps
       }
-              //console.log(markers);
-
    }
     var input = document.getElementById('searchTextField');
     var options = {
          types: ['(cities)'],
-    componentRestrictions: {country: "nl"} // alleen plaatsnamen Nederland
+    componentRestrictions: {country: "nl"} // Only the netherlands
              };
     
     new google.maps.places.Autocomplete(input, options);
@@ -157,8 +153,7 @@ processArray()
       var dealeremail = in_area[i][2];
       var distanceround = in_area[i][3];
 
-      jQuery('#results ol').append('<li class = "therapist" value = "'+in_area[i][4]+'">' +
-        //'<h4>' + dealername + ' (' + distanceround + ' km afstand)</h4>' +
+      jQuery('#results ol').append('<li class = "therapist" value = "'+in_area[i][4]+'">' + // Append results to dom
         '<h4 id = "heading">' + dealername + ' </h4>' +
         '<p id = "text">' + dealeraddress + '</p>' +
         '<a href="mailto:' + dealeremail + '">' + dealeremail + '</a>' +
@@ -205,10 +200,12 @@ processArray()
                 var jsonResponse = JSON.parse(response);
                 if(jsonResponse != "" && jsonResponse != "false")
                 {
-                  if(jsonResponse.length > 2)
+
+                  if(jsonResponse.length > 1)
                   {
+                    console.log(jsonResponse);
                      jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
-                    .attr('src', jsonResponse[2]);
+                    .attr('src', jsonResponse[1]);
                   }
                   else{
                   jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
@@ -223,7 +220,6 @@ processArray()
                    jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
                     .attr('src', "https://i.stack.imgur.com/l60Hf.png");
                 }
-                //loggedInUser = jsonResponse[1].trim();
                      toggleViews();
                   if(loggedInUser == alumni[6]) // for test purpose condition is set to != 
                   {
@@ -287,7 +283,7 @@ jQuery('.alumnicontainer #goBack').on('click', function(){
              }
         });
 
-jQuery('#fileToUpload').on('change', function() {
+jQuery('#fileToUpload').on('change', function() { // Change tumbnail to uploaded image
     jQuery('#saveChanges').removeAttr('style');
     var input = jQuery(this)[0];
     console.log(input);
@@ -303,4 +299,5 @@ jQuery('#fileToUpload').on('change', function() {
             reader.readAsDataURL(input.files[0]);
         }
 });
+
 });
