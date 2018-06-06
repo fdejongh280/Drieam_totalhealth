@@ -4,14 +4,14 @@ function text_ajax_process_request() {// This function updates of inserts data p
   	if ( isset( $_POST["text"] ) ) {
 		if($_POST['user'] == $_SESSION['alumni_user'])
 		{
-			$my_query = new WP_Query( array( 'post_type' => 'Alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
+			$my_query = new WP_Query( array( 'post_type' => 'alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
 			if( $my_query->have_posts()) {
 				$post = array();
 				$post['ID'] 				= $my_query->posts[0]->ID;
 				$post['post_title']         = $_POST['title'];
 				$post['post_content']       = $_POST['text'];
 				$post['post_type']      = 'alumni';
-				//wp_update_post($post);
+				wp_update_post($post);
 				$post_id = $post['ID'];
 				echo 'tekst geupdate';
 			}
@@ -19,7 +19,7 @@ function text_ajax_process_request() {// This function updates of inserts data p
 				$post = array();
 				$post['post_title']         = $_POST['title'];
 				$post['post_content']       = $_POST['text'];
-				$post['post_type']      = 'Alumni';
+				$post['post_type']      = 'alumni';
 				$postID                 = wp_insert_post($post);
 				add_post_meta($postID, 'alumni_author_id', $_POST['id']);
 				$post_id = $postID;
@@ -49,7 +49,7 @@ add_action('wp_ajax_nopriv_post_alumni_data', 'text_ajax_process_request');
 
 function get_alumni_content_process_request() { // Tis function sends back the content of an alumni from the database
 	  if ( isset( $_POST["id"] ) ) {
-		$my_query = new WP_Query( array( 'post_type' => 'Alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
+		$my_query = new WP_Query( array( 'post_type' => 'alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
 	  }
 	  if( $my_query->have_posts())
 	  {
@@ -116,27 +116,24 @@ add_action('wp_ajax_nopriv_get_username', 'echo_username');
 					//Construct ticketurl
 					$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
 					$ticketUrl = 'http://' . $_SERVER['HTTP_HOST'] . $uri_parts[0]; 
-					if(isset($_GET['ticket']) && !empty($_GET['ticket'])){
+					//if(isset($_GET['ticket']) && !empty($_GET['ticket'])){
 						$url = Alumni_Zoekfunctie()->settings->get_settings()['url']."/cas/proxyValidate.xml?service=".$ticketUrl."&ticket=" .$_GET['ticket'];
 						$response = wp_remote_get($url);
 						$xml = wp_remote_retrieve_body($response);
 						$user = strip_tags($xml);
-
 							if (strpos($user, '@') !== false) {
 
 								// split response into valid username
 								$user = explode('@',$user,2);
 								$user = $user[1]; 
-								error_log("setuser starting");
 								$_SESSION['alumni_user'] = preg_replace('/\s+/', '', $user);
-								error_log($_SESSION['alumni_user']);
 							}
-					}	
+					//}	
 			}
 
 function handle_cas()
 {
-	error_log(print_r(Alumni_Zoekfunctie()->settings->get_settings()['url'],TRUE));
+
 	if(!isset($_SESSION['alumni_user']) && isset($_GET['ticket']))
 	{
 		cas();

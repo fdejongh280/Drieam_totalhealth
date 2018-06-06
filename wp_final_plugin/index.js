@@ -76,7 +76,7 @@ jQuery(document).ready(function(){
       lat: 52.224196,
       lng: 5.678053
     },
-    zoom: 8,
+    zoom: 6,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
@@ -325,11 +325,12 @@ jQuery('#fileToUpload').on('change', function() { // Change tumbnail to uploaded
         window.location.href = "http://total-health.testing.edufra.me/cas/login?service="+ newURL;
       }
       else{
+        
         window.location.href = "http://total-health.testing.edufra.me/cas/login?service="+ window.location.href
       }
     }
     else{
-      alert("Je bent al ingelogd!");
+      alert("Je bent al ingelogd");
     }
 
   });
