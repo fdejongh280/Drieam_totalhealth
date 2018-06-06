@@ -1,4 +1,7 @@
 jQuery(document).ready(function(){
+  if(jQuery("#loggedInUserCallback")[0].innerText.length > 0){
+    jQuery("#goToMyAlumniPage").removeAttr('style');
+  }
   var loggedInUser;
   var markers = [];
   var in_area = [];
@@ -12,32 +15,17 @@ jQuery(document).ready(function(){
    jQuery.get(the_ajax_script.ajaxurl, data, function(response) { // Get data from endpoint
       var dataForMap = JSON.parse(response[0].body); 
       var courses = JSON.parse(response[1].body);
+      if(response[2] != "")
+      {
+        loggedInUser = response[2];
+      }
       console.log(courses);
-      loggedInUser = response[3];
-      loggedInUser = loggedInUser.trim();//'floris@dynamixpixel.nl'
 
-//these functions including async functions preventt main thread from going further untill all data is fetched
-function delay()
-{
-  return new Promise(resolve => setTimeout(resolve, 300));
-}
-async function delayedLog(item)
-{
-  await delay();
-}
-
-async function processArray(array)
-{
-  const promises = array.map(delayedLog);
-  await Promise.all(promises);
-  excecuteAddMarkersLoop(); // proceed main thread when array is filled
-}
-
-
-      dataForMap.forEach( async (item) => { // Push all data to array
-          await geocoder.geocode({
+      dataForMap.forEach(  (item) => { // Push all data to array
+           geocoder.geocode({
           'address': item.address.postal_code + " " + item.address.city
         }, function(results, status) {
+
           var phone = "";
           var middleName ="";
             if(item.phone != null)
@@ -49,17 +37,29 @@ async function processArray(array)
               middleName = item.middle_name;
             }
                   locations.push([(item.first_name +" "+ middleName +" "+item.last_name),results[0].geometry.bounds.f.b,results[0].geometry.bounds.b.b, item.address.address, item.address.postal_code, item.address.city, item.email, item.id, phone]);
-                if(item == dataForMap[dataForMap.length -1])
-                {
-                  processArray(locations);
-                }
+                var latlng = new google.maps.LatLng(results[0].geometry.bounds.f.b, results[0].geometry.bounds.b.b);
+                var marker = new google.maps.Marker({
+                  position: latlng,
+                  map: map,
+                  icon: 'http://chart.apis.google.com/chart?cht=d&chdp=mapsapi&chl=pin%27i%5c%27%5b%27-2%27f%5chv%27a%5c%5dh%5c%5do%5c0099FF%27fC%5c000000%27tC%5c000000%27eC%5cLauto%27f%5c&ext=.png'
+                });
+                markers.push(marker);
         });
       });
     });
-   function excecuteAddMarkersLoop()
+  function add_marker(arraymarkers, i) {
+    var latlng = new google.maps.LatLng(arraymarkers[i][1], arraymarkers[i][2]);
+    var marker = new google.maps.Marker({
+      position: latlng,
+      map: map,
+      icon: 'http://chart.apis.google.com/chart?cht=d&chdp=mapsapi&chl=pin%27i%5c%27%5b%27-2%27f%5chv%27a%5c%5dh%5c%5do%5c0099FF%27fC%5c000000%27tC%5c000000%27eC%5cLauto%27f%5c&ext=.png'
+    });
+    markers[i] = marker;
+  }
+   function excecuteAddMarkersLoop(locations)
    {
      console.log(locations);
-      for ( i = 0; i < locations.length; i++) {
+      for (var i = 0; i < locations.length; i++) {
         add_marker(locations, i); // Add markers on the google maps
       }
    }
@@ -107,7 +107,7 @@ async function processArray(array)
         });
         map.setCenter(searchedlocation);
         map.fitBounds(circle.getBounds());
-        for (i = 0; i < locations.length; i++) {
+        for (var i = 0; i < locations.length; i++) {
           var position = new google.maps.LatLng(locations[i][1], locations[i][2]);
           var distance = google.maps.geometry.spherical.computeDistanceBetween(searchedlocation, position);
 
@@ -131,22 +131,14 @@ async function processArray(array)
     map.setCenter(center);
   }
 
-  function add_marker(arraymarkers, i) {
-    var latlng = new google.maps.LatLng(arraymarkers[i][1], arraymarkers[i][2]);
-    var marker = new google.maps.Marker({
-      position: latlng,
-      map: map,
-      icon: 'http://chart.apis.google.com/chart?cht=d&chdp=mapsapi&chl=pin%27i%5c%27%5b%27-2%27f%5chv%27a%5c%5dh%5c%5do%5c0099FF%27fC%5c000000%27tC%5c000000%27eC%5cLauto%27f%5c&ext=.png'
-    });
-    markers[i] = marker;
-  }
+
 
   function resultstotal(resultstotal, radius, search, circlearea) {
     jQuery('#results').empty().append('<p class="col" style="margin-left: 20px;">' + resultstotal + ' therapeut(en) binnen ' + radius + 'km rond ' + search + '</p><ol class="col"></ol>');
     in_area.sort(function(a, b) {
       return a[3] - b[3];
     });
-    for (i = 0; i < in_area.length; i++) {
+    for (var i = 0; i < in_area.length; i++) {
 
       var dealername = in_area[i][0];
       var dealeraddress = in_area[i][1];
@@ -160,7 +152,8 @@ async function processArray(array)
         '</li>');
     }
     jQuery('#results ol .therapist').on('click', function(){
-      alumni = searchForCorrespondingAlumni(jQuery(this).val());
+      alumni = searchForCorrespondingAlumnibyID(jQuery(this).val());
+
      fillAlumniPage(alumni);
     });
 
@@ -172,9 +165,9 @@ async function processArray(array)
 
   }
 
-  function searchForCorrespondingAlumni(id)
+  function searchForCorrespondingAlumnibyID(id)
   {
-    for(i = 0; i < locations.length; i++)
+    for(var i = 0; i < locations.length; i++)
     {
       if(locations[i][7] == id)
       {
@@ -183,6 +176,19 @@ async function processArray(array)
     }
     return "";
   }
+
+function searchForCorrespondingAlumniByUsername(username)
+{
+     for(var i = 0; i < locations.length; i++)
+    {
+      if(locations[i][6] == username)
+      {
+        return locations[i];
+      }
+    }
+    return "";
+}
+
   function fillAlumniPage(alumni)
   {
     jQuery('.alumnicontainer .sidebar .sidebar-top .profile-basic .name').text(alumni[0]);
@@ -194,7 +200,6 @@ async function processArray(array)
                 action: 'get_alumni_content',
                 id: alumni[7]
               };
-              // the_ajax_script.ajaxurl is a variable that will contain the url to the ajax processing file
               jQuery.post(the_ajax_script.ajaxurl, data, function(response) {
                 
                 var jsonResponse = JSON.parse(response);
@@ -221,7 +226,7 @@ async function processArray(array)
                     .attr('src', "https://i.stack.imgur.com/l60Hf.png");
                 }
                      toggleViews();
-                  if(loggedInUser == alumni[6]) // for test purpose condition is set to != 
+                  if(loggedInUser == alumni[6]) // Give the person rights to edit page if it is the user
                   {
                       jQuery('#editText').removeAttr('style');
                       jQuery('#fileToUpload').removeAttr('style');
@@ -260,10 +265,11 @@ jQuery('.alumnicontainer #goBack').on('click', function(){
                {
                   fd.append( "image", jQuery('#fileToUpload')[0].files[0]);
                }
-                fd.append( "action", 'test_response');      
+               fd.append( "action", 'post_alumni_data');      
                fd.append("text", jQuery('.alumnicontainer .content .info').text());
                fd.append("title", jQuery('.alumnicontainer .content .heading').text());
                fd.append("id", alumni[7]);
+               fd.append("user", alumni[6]);
               jQuery.ajax({
                   type: 'POST',
                   url: the_ajax_script.ajaxurl,
@@ -299,5 +305,56 @@ jQuery('#fileToUpload').on('change', function() { // Change tumbnail to uploaded
             reader.readAsDataURL(input.files[0]);
         }
 });
+
+  jQuery('#logIn').on('click', function(){
+    if(jQuery("#loggedInUserCallback")[0].innerText.length == 0)
+    {
+      var ticket = getQueryVariable("ticket");
+      if(ticket)
+      {
+        var oldURL = window.location.href
+        var index = 0;
+        var newURL = oldURL;
+        index = oldURL.indexOf('?');
+        if(index == -1){
+            index = oldURL.indexOf('#');
+        }
+        if(index != -1){
+            newURL = oldURL.substring(0, index);
+        }
+        window.location.href = "http://total-health.testing.edufra.me/cas/login?service="+ newURL;
+      }
+      else{
+        window.location.href = "http://total-health.testing.edufra.me/cas/login?service="+ window.location.href
+      }
+    }
+    else{
+      alert("Je bent al ingelogd!");
+    }
+
+  });
+
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+
+  jQuery('#goToMyAlumniPage').on('click', function(){
+        var data = {
+      action: 'get_username',
+    };
+         jQuery.get(the_ajax_script.ajaxurl, data, function(response) { 
+            loggedInUser = response
+            alumni = searchForCorrespondingAlumniByUsername(loggedInUser);
+            fillAlumniPage(alumni);
+         });
+
+  }); 
 
 });

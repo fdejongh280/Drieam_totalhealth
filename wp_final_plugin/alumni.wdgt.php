@@ -30,6 +30,10 @@ class Alumni_Widget extends WP_Widget {
   	// wp_deregister_script('jquery');
   	// wp_register_script('jquery', "https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js", false, null);
    	wp_enqueue_script('jquery');
+	wp_register_script( "babel-polyfill", "https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js");
+	wp_enqueue_script('babel-polyfill');
+	wp_register_script( "babel", "https://unpkg.com/@babel/standalone@7.0.0-beta.49/babel.min.js");
+	wp_enqueue_script('babel');
 	wp_register_script( "google", "https://maps.googleapis.com/maps/api/js?key=AIzaSyAFW3vAkUm_7An5IWXslzqQci7Y1rT_9C0&language=nl&libraries=geometry,places");
 	wp_enqueue_script('google');
 	wp_enqueue_script( "ajax-test", plugin_dir_url( __FILE__ ) . '/index.js', array( 'jquery' ) );
@@ -58,12 +62,11 @@ class Alumni_Widget extends WP_Widget {
 		echo $args['before_widget'];
 
 		?>
-<!--[if lt IE 11]>
-    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-<![endif]-->
         <body id = "custombody">
 <header id="zoekfunctie" role="banner" class="column-xs main-xs-center">
-
+<button id = "logIn">Log in</button>
+<button id = "goToMyAlumniPage" style="display:none;">Ga naar mijn alumni pagina</button>
+<p id= "loggedInUserCallback"><?php if(isset($_SESSION['alumni_user'])){ echo "ingelogd als: ".$_SESSION['alumni_user'];}else{echo '';};?></p>
     <form id="locator" class="container column-xs row-md cross-xs-stretch cross-md-end" action="">
         <div class="col">
         <label id = "zoekveld" for="locator_text">Zoeken op postcode of woonplaats</label>
@@ -121,6 +124,7 @@ class Alumni_Widget extends WP_Widget {
 				</div>
 				<button id = "editText" style="display: none; ">Text bewerken</button>
 				<button id = "saveChanges" style="display: none;">Bewerking opslaan</button>
+				<script type="text/babel" data-presets="es2015,stage-3"></script>
 			</div>
 		</div>
 	</div>
@@ -192,10 +196,12 @@ class Alumni_Widget extends WP_Widget {
 
 add_shortcode( 'eduframe_alumni', array( 'Alumni_Widget', 'shortcode' ) );
 
-// function test_ajax_load_scripts() {
-// 	// CSS loading ------------------------------------------------------------------
+function wis_wp_theme_script_loader_tag( $tag, $handle, $src ) {
+  // Check that this is output of JSX file
+  if ( 'ajax-test' == $handle ) {
+    $tag = str_replace( "<script type='text/javascript'", "<script type='text/babel'", $tag );
+  }
 
-// }
-
-//add_action('wp_enqueue_scripts', 'test_ajax_load_scripts');
-
+  return $tag;
+}
+add_filter( 'script_loader_tag', 'wis_wp_theme_script_loader_tag', 10, 3 );

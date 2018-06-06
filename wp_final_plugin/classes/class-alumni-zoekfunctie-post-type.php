@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly.
  * @author Elwin van den Eijnden & Floris de Jongh
  * @since 1.0.0
  */
-class Alumni_Zoekfuntie_Post_Type {
+class Alumni_Zoekfunctie_Post_Type {
 	/**
 	 * The post type token.
 	 * @access public
@@ -58,7 +58,7 @@ class Alumni_Zoekfuntie_Post_Type {
 	 * @access public
 	 * @since 1.0.0
 	 */
-	public function __construct( $post_type = 'thing', $singular = '', $plural = '', $args = array(), $taxonomies = array() ) {
+	public function __construct( $post_type = 'alumni', $singular = '', $plural = '', $args = array(), $taxonomies = array() ) {
 		$this->post_type = $post_type;
 		$this->singular = $singular;
 		$this->plural = $plural;
@@ -93,23 +93,23 @@ class Alumni_Zoekfuntie_Post_Type {
 	 */
 	public function register_post_type () {
 		$labels = array(
-			'name' => sprintf( _x( '%s', 'post type general name', 'alumni-zoekfuntie' ), $this->plural ),
-			'singular_name' => sprintf( _x( '%s', 'post type singular name', 'alumni-zoekfuntie' ), $this->singular ),
-			'add_new' => _x( 'Add New', $this->post_type, 'alumni-zoekfuntie' ),
-			'add_new_item' => sprintf( __( 'Add New %s', 'alumni-zoekfuntie' ), $this->singular ),
-			'edit_item' => sprintf( __( 'Edit %s', 'alumni-zoekfuntie' ), $this->singular ),
-			'new_item' => sprintf( __( 'New %s', 'alumni-zoekfuntie' ), $this->singular ),
-			'all_items' => sprintf( __( 'All %s', 'alumni-zoekfuntie' ), $this->plural ),
-			'view_item' => sprintf( __( 'View %s', 'alumni-zoekfuntie' ), $this->singular ),
-			'search_items' => sprintf( __( 'Search %a', 'alumni-zoekfuntie' ), $this->plural ),
-			'not_found' => sprintf( __( 'No %s Found', 'alumni-zoekfuntie' ), $this->plural ),
-			'not_found_in_trash' => sprintf( __( 'No %s Found In Trash', 'alumni-zoekfuntie' ), $this->plural ),
+			'name' => sprintf( _x( '%s', 'post type general name', 'alumni-zoekfunctie' ), $this->plural ),
+			'singular_name' => sprintf( _x( '%s', 'post type singular name', 'alumni-zoekfunctie' ), $this->singular ),
+			'add_new' => _x( 'Add New', $this->post_type, 'alumni-zoekfunctie' ),
+			'add_new_item' => sprintf( __( 'Add New %s', 'alumni-zoekfunctie' ), $this->singular ),
+			'edit_item' => sprintf( __( 'Edit %s', 'alumni-zoekfunctie' ), $this->singular ),
+			'new_item' => sprintf( __( 'New %s', 'alumni-zoekfunctie' ), $this->singular ),
+			'all_items' => sprintf( __( 'All %s', 'alumni-zoekfunctie' ), $this->plural ),
+			'view_item' => sprintf( __( 'View %s', 'alumni-zoekfunctie' ), $this->singular ),
+			'search_items' => sprintf( __( 'Search %a', 'alumni-zoekfunctie' ), $this->plural ),
+			'not_found' => sprintf( __( 'No %s Found', 'alumni-zoekfunctie' ), $this->plural ),
+			'not_found_in_trash' => sprintf( __( 'No %s Found In Trash', 'alumni-zoekfunctie' ), $this->plural ),
 			'parent_item_colon' => '',
 			'menu_name' => $this->plural,
 		);
 
-		$single_slug = apply_filters( 'alumni-zoekfuntie_single_slug', _x( sanitize_title_with_dashes( $this->singular ), 'single post url slug', 'alumni-zoekfuntie' ) );
-		$archive_slug = apply_filters( 'alumni-zoekfuntie_archive_slug', _x( sanitize_title_with_dashes( $this->plural ), 'post archive url slug', 'alumni-zoekfuntie' ) );
+		$single_slug = apply_filters( 'alumni-zoekfunctie_single_slug', _x( sanitize_title_with_dashes( $this->singular ), 'single post url slug', 'alumni-zoekfunctie' ) );
+		$archive_slug = apply_filters( 'alumni-zoekfunctie_archive_slug', _x( sanitize_title_with_dashes( $this->plural ), 'post archive url slug', 'alumni-zoekfunctie' ) );
 
 		$defaults = array(
 			'labels' => $labels,
@@ -139,8 +139,8 @@ class Alumni_Zoekfuntie_Post_Type {
 	 * @return void
 	 */
 	public function register_taxonomy () {
-		$this->taxonomies['thing-category'] = new Alumni_Zoekfuntie_Taxonomy(); // Leave arguments empty, to use the default arguments.
-		$this->taxonomies['thing-category']->register();
+		$this->taxonomies['alumni-category'] = new Alumni_Zoekfunctie_Taxonomy(); // Leave arguments empty, to use the default arguments.
+		$this->taxonomies['alumni-category']->register();
 	} // End register_taxonomy()
 
 	/**
@@ -172,7 +172,7 @@ class Alumni_Zoekfuntie_Post_Type {
 	 * @return void
 	 */
 	public function register_custom_column_headings ( $defaults ) {
-		$new_columns = array( 'image' => __( 'Image', 'alumni-zoekfuntie' ) );
+		$new_columns = array( 'image' => __( 'Image', 'alumni-zoekfunctie' ) );
 
 		$last_item = array();
 
@@ -206,19 +206,19 @@ class Alumni_Zoekfuntie_Post_Type {
 
 		$messages[$this->post_type] = array(
 			0 => '', // Unused. Messages start at index 1.
-			1 => sprintf( __( '%3$s updated. %sView %4$s%s', 'alumni-zoekfuntie' ), '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', '</a>', $this->singular, strtolower( $this->singular ) ),
-			2 => __( 'Custom field updated.', 'alumni-zoekfuntie' ),
-			3 => __( 'Custom field deleted.', 'alumni-zoekfuntie' ),
-			4 => sprintf( __( '%s updated.', 'alumni-zoekfuntie' ), $this->singular ),
+			1 => sprintf( __( '%3$s updated. %sView %4$s%s', 'alumni-zoekfunctie' ), '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', '</a>', $this->singular, strtolower( $this->singular ) ),
+			2 => __( 'Custom field updated.', 'alumni-zoekfunctie' ),
+			3 => __( 'Custom field deleted.', 'alumni-zoekfunctie' ),
+			4 => sprintf( __( '%s updated.', 'alumni-zoekfunctie' ), $this->singular ),
 			/* translators: %s: date and time of the revision */
-			5 => isset($_GET['revision']) ? sprintf( __( '%s restored to revision from %s', 'alumni-zoekfuntie' ), $this->singular, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6 => sprintf( __( '%1$s published. %3$sView %2$s%4$s', 'alumni-zoekfuntie' ), $this->singular, strtolower( $this->singular ), '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', '</a>' ),
-			7 => sprintf( __( '%s saved.', 'alumni-zoekfuntie' ), $this->singular ),
-			8 => sprintf( __( '%s submitted. %sPreview %s%s', 'alumni-zoekfuntie' ), $this->singular, strtolower( $this->singular ), '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', '</a>' ),
-			9 => sprintf( __( '%s scheduled for: %1$s. %2$sPreview %s%3$s', 'alumni-zoekfuntie' ), $this->singular, strtolower( $this->singular ),
+			5 => isset($_GET['revision']) ? sprintf( __( '%s restored to revision from %s', 'alumni-zoekfunctie' ), $this->singular, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			6 => sprintf( __( '%1$s published. %3$sView %2$s%4$s', 'alumni-zoekfunctie' ), $this->singular, strtolower( $this->singular ), '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', '</a>' ),
+			7 => sprintf( __( '%s saved.', 'alumni-zoekfunctie' ), $this->singular ),
+			8 => sprintf( __( '%s submitted. %sPreview %s%s', 'alumni-zoekfunctie' ), $this->singular, strtolower( $this->singular ), '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', '</a>' ),
+			9 => sprintf( __( '%s scheduled for: %1$s. %2$sPreview %s%3$s', 'alumni-zoekfunctie' ), $this->singular, strtolower( $this->singular ),
 			// translators: Publish box date format, see http://php.net/date
 			'<strong>' . date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ) . '</strong>', '<a target="_blank" href="' . esc_url( get_permalink($post_ID) ) . '">', '</a>' ),
-			10 => sprintf( __( '%s draft updated. %sPreview %s%s', 'alumni-zoekfuntie' ), $this->singular, strtolower( $this->singular ), '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', '</a>' ),
+			10 => sprintf( __( '%s draft updated. %sPreview %s%s', 'alumni-zoekfunctie' ), $this->singular, strtolower( $this->singular ), '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', '</a>' ),
 		);
 
 		return $messages;
@@ -231,7 +231,7 @@ class Alumni_Zoekfuntie_Post_Type {
 	 * @return void
 	 */
 	public function meta_box_setup () {
-		add_meta_box( $this->post_type . '-data', __( 'Thing Details', 'alumni-zoekfuntie' ), array( $this, 'meta_box_content' ), $this->post_type, 'normal', 'high' );
+		add_meta_box( $this->post_type . '-data', __( 'Alumni Details', 'alumni-zoekfunctie' ), array( $this, 'meta_box_content' ), $this->post_type, 'normal', 'high' );
 	} // End meta_box_setup()
 
 	/**
@@ -247,7 +247,7 @@ class Alumni_Zoekfuntie_Post_Type {
 
 		$html = '';
 
-		$html .= '<input type="hidden" name="alumni-zoekfuntie_' . $this->post_type . '_noonce" id="alumni-zoekfuntie_' . $this->post_type . '_noonce" value="' . wp_create_nonce( plugin_basename( dirname( Alumni_Zoekfuntie()->plugin_path ) ) ) . '" />';
+		$html .= '<input type="hidden" name="alumni-zoekfunctie_' . $this->post_type . '_noonce" id="alumni-zoekfunctie_' . $this->post_type . '_noonce" value="' . wp_create_nonce( plugin_basename( dirname( Alumni_Zoekfunctie()->plugin_path ) ) ) . '" />';
 
 		if ( 0 < count( $field_data ) ) {
 			$html .= '<table class="form-table">' . "\n";
@@ -286,7 +286,7 @@ class Alumni_Zoekfuntie_Post_Type {
 			return $post_id;
 		}
 
-		if ( ! isset( $_POST['alumni-zoekfuntie_' . $this->post_type . '_noonce'] ) || ! wp_verify_nonce( $_POST['alumni-zoekfuntie_' . $this->post_type . '_noonce'], plugin_basename( dirname( Alumni_Zoekfuntie()->plugin_path ) ) ) ) {
+		if ( ! isset( $_POST['alumni-zoekfunctie_' . $this->post_type . '_noonce'] ) || ! wp_verify_nonce( $_POST['alumni-zoekfunctie_' . $this->post_type . '_noonce'], plugin_basename( dirname( Alumni_Zoekfunctie()->plugin_path ) ) ) ) {
 			return $post_id;
 		}
 
@@ -331,7 +331,7 @@ class Alumni_Zoekfuntie_Post_Type {
 	 */
 	public function enter_title_here ( $title ) {
 		if ( get_post_type() == $this->post_type ) {
-			$title = __( 'Enter the thing title here', 'alumni-zoekfuntie' );
+			$title = __( 'Enter the alumni title here', 'alumni-zoekfunctie' );
 		}
 		return $title;
 	} // End enter_title_here()
@@ -346,14 +346,14 @@ class Alumni_Zoekfuntie_Post_Type {
 		$fields = array();
 
 		$fields['url'] = array(
-		    'name' => __( 'URL', 'alumni-zoekfuntie' ),
-		    'description' => __( 'Enter a URL that applies to this thing (for example: http://domain.com/).', 'alumni-zoekfuntie' ),
+		    'name' => __( 'URL', 'alumni-zoekfunctie' ),
+		    'description' => __( 'Enter a URL that applies to this alumni (for example: http://domain.com/).', 'alumni-zoekfunctie' ),
 		    'type' => 'url',
 		    'default' => '',
 		    'section' => 'info'
 		);
 
-		return apply_filters( 'alumni-zoekfuntie_custom_fields_settings', $fields );
+		return apply_filters( 'alumni-zoekfunctie_custom_fields_settings', $fields );
 	} // End get_custom_fields_settings()
 
 	/**
@@ -363,7 +363,7 @@ class Alumni_Zoekfuntie_Post_Type {
 	 * @since  1.0.0
 	 * @return string       	<img> tag.
 	 */
-	protected function get_image ( $id, $size = 'thing-thumbnail' ) {
+	protected function get_image ( $id, $size = 'alumni-thumbnail' ) {
 		$response = '';
 
 		if ( has_post_thumbnail( $id ) ) {

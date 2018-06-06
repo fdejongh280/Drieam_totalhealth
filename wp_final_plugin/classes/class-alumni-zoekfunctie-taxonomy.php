@@ -2,17 +2,17 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly.
 
 /**
- * Alumni Zoekfuntie Taxonomy Class
+ * Alumni Zoekfunctie Taxonomy Class
  *
  * Re-usable class for registering post type taxonomies.
  *
  * @package WordPress
- * @subpackage Alumni_Zoekfuntie
+ * @subpackage Alumni_Zoekfunctie
  * @category Plugin
  * @author Elwin van den Eijnden & Floris de Jongh
  * @since 1.0.0
  */
-class Alumni_Zoekfuntie_Taxonomy {
+class Alumni_Zoekfunctie_Taxonomy {
 	/**
 	 * The post type to register the taxonomy for.
 	 * @access  private
@@ -63,14 +63,14 @@ class Alumni_Zoekfuntie_Taxonomy {
 	 * @param   string $plural    Plural  name.
 	 * @param   array  $args      Array of argument overrides.
 	 */
-	public function __construct ( $post_type = 'thing', $token = 'thing-category', $singular = '', $plural = '', $args = array() ) {
+	public function __construct ( $post_type = 'alumni', $token = 'alumni-category', $singular = '', $plural = '', $args = array() ) {
 		$this->post_type = $post_type;
 		$this->token = esc_attr( $token );
 		$this->singular = esc_html( $singular );
 		$this->plural = esc_html( $plural );
 
-		if ( '' == $this->singular ) $this->singular = __( 'Category', 'alumni-zoekfuntie' );
-		if ( '' == $this->plural ) $this->plural = __( 'Categories', 'alumni-zoekfuntie' );
+		if ( '' == $this->singular ) $this->singular = __( 'Category', 'alumni-zoekfunctie' );
+		if ( '' == $this->plural ) $this->plural = __( 'Categories', 'alumni-zoekfunctie' );
 
 		$this->args = wp_parse_args( $args, $this->_get_default_args() );
 	} // End __construct()
@@ -93,17 +93,17 @@ class Alumni_Zoekfuntie_Taxonomy {
 	 */
 	private function _get_default_labels () {
 		return array(
-			    'name'                => sprintf( _x( '%s', 'taxonomy general name', 'alumni-zoekfuntie' ), $this->plural ),
-			    'singular_name'       => sprintf( _x( '%s', 'taxonomy singular name', 'alumni-zoekfuntie' ), $this->singular ),
-			    'search_items'        => sprintf( __( 'Search %s', 'alumni-zoekfuntie' ), $this->plural ),
-			    'all_items'           => sprintf( __( 'All %s', 'alumni-zoekfuntie' ), $this->plural ),
-			    'parent_item'         => sprintf( __( 'Parent %s', 'alumni-zoekfuntie' ), $this->singular ),
-			    'parent_item_colon'   => sprintf( __( 'Parent %s:', 'alumni-zoekfuntie' ), $this->singular ),
-			    'edit_item'           => sprintf( __( 'Edit %s', 'alumni-zoekfuntie' ), $this->singular ),
-			    'update_item'         => sprintf( __( 'Update %s', 'alumni-zoekfuntie' ), $this->singular ),
-			    'add_new_item'        => sprintf( __( 'Add New %s', 'alumni-zoekfuntie' ), $this->singular ),
-			    'new_item_name'       => sprintf( __( 'New %s Name', 'alumni-zoekfuntie' ), $this->singular ),
-			    'menu_name'           => sprintf( __( '%s', 'alumni-zoekfuntie' ), $this->plural )
+			    'name'                => sprintf( _x( '%s', 'taxonomy general name', 'alumni-zoekfunctie' ), $this->plural ),
+			    'singular_name'       => sprintf( _x( '%s', 'taxonomy singular name', 'alumni-zoekfunctie' ), $this->singular ),
+			    'search_items'        => sprintf( __( 'Search %s', 'alumni-zoekfunctie' ), $this->plural ),
+			    'all_items'           => sprintf( __( 'All %s', 'alumni-zoekfunctie' ), $this->plural ),
+			    'parent_item'         => sprintf( __( 'Parent %s', 'alumni-zoekfunctie' ), $this->singular ),
+			    'parent_item_colon'   => sprintf( __( 'Parent %s:', 'alumni-zoekfunctie' ), $this->singular ),
+			    'edit_item'           => sprintf( __( 'Edit %s', 'alumni-zoekfunctie' ), $this->singular ),
+			    'update_item'         => sprintf( __( 'Update %s', 'alumni-zoekfunctie' ), $this->singular ),
+			    'add_new_item'        => sprintf( __( 'Add New %s', 'alumni-zoekfunctie' ), $this->singular ),
+			    'new_item_name'       => sprintf( __( 'New %s Name', 'alumni-zoekfunctie' ), $this->singular ),
+			    'menu_name'           => sprintf( __( '%s', 'alumni-zoekfunctie' ), $this->plural )
 			  );
 	} // End _get_default_labels()
 

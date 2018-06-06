@@ -2,17 +2,17 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Alumni_Zoekfuntie_Settings Class
+ * Alumni_Zoekfunctie_Settings Class
  *
- * @class Alumni_Zoekfuntie_Settings
+ * @class Alumni_Zoekfunctie_Settings
  * @version	1.0.0
  * @since 1.0.0
- * @package	Alumni_Zoekfuntie
+ * @package	Alumni_Zoekfunctie
  * @author Elwin van den Eijnden & Floris de Jongh
  */
-final class Alumni_Zoekfuntie_Settings {
+final class Alumni_Zoekfunctie_Settings {
 	/**
-	 * Alumni_Zoekfuntie_Admin The single instance of Alumni_Zoekfuntie_Admin.
+	 * Alumni_Zoekfunctie_Admin The single instance of Alumni_Zoekfunctie_Admin.
 	 * @var 	object
 	 * @access  private
 	 * @since 	1.0.0
@@ -28,13 +28,13 @@ final class Alumni_Zoekfuntie_Settings {
 	private $_has_select;
 
 	/**
-	 * Main Alumni_Zoekfuntie_Settings Instance
+	 * Main Alumni_Zoekfunctie_Settings Instance
 	 *
-	 * Ensures only one instance of Alumni_Zoekfuntie_Settings is loaded or can be loaded.
+	 * Ensures only one instance of Alumni_Zoekfunctie_Settings is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @return Main Alumni_Zoekfuntie_Settings instance
+	 * @return Main Alumni_Zoekfunctie_Settings instance
 	 */
 	public static function instance () {
 		if ( is_null( self::$_instance ) )
@@ -71,7 +71,7 @@ final class Alumni_Zoekfuntie_Settings {
 				$method = 'validate_field_' . $fields[$k]['type'];
 
 				if ( ! method_exists( $this, $method ) ) {
-					if ( true === (bool)apply_filters( 'alumni-zoekfuntie-validate-field-' . $fields[$k]['type'] . '_use_default', true ) ) {
+					if ( true === (bool)apply_filters( 'alumni-zoekfunctie-validate-field-' . $fields[$k]['type'] . '_use_default', true ) ) {
 						$method = 'validate_field_text';
 					} else {
 						$method = '';
@@ -80,10 +80,10 @@ final class Alumni_Zoekfuntie_Settings {
 
 				// If we have an internal method for validation, filter and apply it.
 				if ( '' != $method ) {
-					add_filter( 'alumni-zoekfuntie-validate-field-' . $fields[$k]['type'], array( $this, $method ) );
+					add_filter( 'alumni-zoekfunctie-validate-field-' . $fields[$k]['type'], array( $this, $method ) );
 				}
 
-				$method_output = apply_filters( 'alumni-zoekfuntie-validate-field-' . $fields[$k]['type'], $v, $fields[$k] );
+				$method_output = apply_filters( 'alumni-zoekfunctie-validate-field-' . $fields[$k]['type'], $v, $fields[$k] );
 
 				if ( ! is_wp_error( $method_output ) ) {
 					$input[$k] = $method_output;
@@ -189,7 +189,7 @@ final class Alumni_Zoekfuntie_Settings {
 		}
 
 		// Construct the key.
-		$key 				= Alumni_Zoekfuntie()->token . '-' . $args['section'] . '[' . $args['id'] . ']';
+		$key 				= Alumni_Zoekfunctie()->token . '-' . $args['section'] . '[' . $args['id'] . ']';
 		$method_output 		= $this->$method( $key, $args );
 
 		if ( ! is_wp_error( $method_output ) ) {
@@ -197,10 +197,10 @@ final class Alumni_Zoekfuntie_Settings {
 		}
 
 		// Output the description, if the current field allows it.
-		if ( isset( $args['type'] ) && ! in_array( $args['type'], (array)apply_filters( 'alumni-zoekfuntie-no-description-fields', array( 'checkbox' ) ) ) ) {
+		if ( isset( $args['type'] ) && ! in_array( $args['type'], (array)apply_filters( 'alumni-zoekfunctie-no-description-fields', array( 'checkbox' ) ) ) ) {
 			if ( isset( $args['description'] ) ) {
 				$description = '<p class="description">' . wp_kses_post( $args['description'] ) . '</p>' . "\n";
-				if ( in_array( $args['type'], (array)apply_filters( 'alumni-zoekfuntie-new-line-description-fields', array( 'textarea', 'select' ) ) ) ) {
+				if ( in_array( $args['type'], (array)apply_filters( 'alumni-zoekfunctie-new-line-description-fields', array( 'textarea', 'select' ) ) ) ) {
 					$description = wpautop( $description );
 				}
 				$html .= $description;
@@ -219,13 +219,13 @@ final class Alumni_Zoekfuntie_Settings {
 	public function get_settings_sections () {
 		$settings_sections = array();
 
-		$settings_sections['standard-fields'] = __( 'Standard Fields', 'alumni-zoekfuntie' );
-		$settings_sections['special-fields'] = __( 'Special Fields', 'alumni-zoekfuntie' );
+		$settings_sections['standard-fields'] = __( 'Standard Fields', 'alumni-zoekfunctie' );
+		$settings_sections['special-fields'] = __( 'Special Fields', 'alumni-zoekfunctie' );
 		// Add your new sections below here.
 		// Admin tabs will be created for each section.
 		// Don't forget to add fields for the section in the get_settings_fields() function below
 
-		return (array)apply_filters( 'alumni-zoekfuntie-settings-sections', $settings_sections );
+		return (array)apply_filters( 'alumni-zoekfunctie-settings-sections', $settings_sections );
 	} // End get_settings_sections()
 
 	/**
@@ -242,62 +242,24 @@ final class Alumni_Zoekfuntie_Settings {
 		switch ( $section ) {
 			case 'standard-fields':
 
-				$settings_fields['text'] = array(
-												'name' => __( 'Example Text Input', 'alumni-zoekfuntie' ),
+				$settings_fields['url'] = array(
+												'name' => __( 'URL', 'alumni-zoekfunctie' ),
 												'type' => 'text',
-												'default' => '',
+												'default' => 'http://total-health.testing.edufra.me',
 												'section' => 'standard-fields',
-												'description' => __( 'Place the field description text here.', 'alumni-zoekfuntie' )
+												'description' => __( 'Bijvoorbeeld: http://total-health.testing.edufra.me', 'alumni-zoekfunctie' )
 											);
-				$settings_fields['textarea'] = array(
-												'name' => __( 'Example Textarea', 'alumni-zoekfuntie' ),
-												'type' => 'textarea',
-												'default' => '',
+				$settings_fields['auth'] = array(
+												'name' => __( 'Auth token', 'alumni-zoekfunctie' ),
+												'type' => 'text',
+												'default' => 'f00c7fadeab67e69bc6e0f0dc0d1edf8',
 												'section' => 'standard-fields',
-												'description' => __( 'Place the field description text here.', 'alumni-zoekfuntie' )
+												'description' => __( 'Bijvoorbeeld: f00c7fadeab67e69bc6e0f0dc0d1edf8', 'alumni-zoekfunctie' )
 											);
-				$settings_fields['checkbox'] = array(
-												'name' => __( 'Example Checkbox', 'alumni-zoekfuntie' ),
-												'type' => 'checkbox',
-												'default' => '',
-												'section' => 'standard-fields',
-												'description' => __( 'Place the field description text here.', 'alumni-zoekfuntie' )
-											);
-				$settings_fields['radio'] = array(
-												'name' => __( 'Example Radio Buttons', 'alumni-zoekfuntie' ),
-												'type' => 'radio',
-												'default' => '',
-												'section' => 'standard-fields',
-												'options' => array(
-																	'one' => __( 'One', 'alumni-zoekfuntie' ),
-																	'two' => __( 'Two', 'alumni-zoekfuntie' ),
-																	'three' => __( 'Three', 'alumni-zoekfuntie' )
-															),
-												'description' => __( 'Place the field description text here.', 'alumni-zoekfuntie' )
-											);
-				$settings_fields['select'] = array(
-													'name' => __( 'Example Select', 'alumni-zoekfuntie' ),
-													'type' => 'select',
-													'default' => '',
-													'section' => 'standard-fields',
-													'options' => array(
-																	'one' => __( 'One', 'alumni-zoekfuntie' ),
-																	'two' => __( 'Two', 'alumni-zoekfuntie' ),
-																	'three' => __( 'Three', 'alumni-zoekfuntie' )
-																),
-													'description' => __( 'Place the field description text here.', 'alumni-zoekfuntie' )
-											);
+			
 
 				break;
 			case 'special-fields':
-
-				$settings_fields['select_taxonomy'] = array(
-													'name' => __( 'Example Taxonomy Selector', 'alumni-zoekfuntie' ),
-													'type' => 'select_taxonomy',
-													'default' => '',
-													'section' => 'special-fields',
-													'description' => __( 'Place the field description text here.', 'alumni-zoekfuntie' )
-											);
 
 				break;
 			default:
@@ -305,7 +267,7 @@ final class Alumni_Zoekfuntie_Settings {
 				break;
 		}
 
-		return (array)apply_filters( 'alumni-zoekfuntie-settings-fields', $settings_fields );
+		return (array)apply_filters( 'alumni-zoekfunctie-settings-fields', $settings_fields );
 	} // End get_settings_fields()
 
 	/**
@@ -470,7 +432,7 @@ final class Alumni_Zoekfuntie_Settings {
 	 * @return  array Supported field type keys.
 	 */
 	public function get_supported_fields () {
-		return (array)apply_filters( 'alumni-zoekfuntie-supported-fields', array( 'text', 'checkbox', 'radio', 'textarea', 'select', 'select_taxonomy' ) );
+		return (array)apply_filters( 'alumni-zoekfunctie-supported-fields', array( 'text', 'checkbox', 'radio', 'textarea', 'select', 'select_taxonomy' ) );
 	} // End get_supported_fields()
 
 	/**
@@ -483,7 +445,7 @@ final class Alumni_Zoekfuntie_Settings {
 	 * @return  mixed Returned value.
 	 */
 	public function get_value ( $key, $default, $section ) {
-		$values = get_option( 'alumni-zoekfuntie-' . $section, array() );
+		$values = get_option( 'alumni-zoekfunctie-' . $section, array() );
 
 		if ( is_array( $values ) && isset( $values[$key] ) ) {
 			$response = $values[$key];
@@ -513,7 +475,7 @@ final class Alumni_Zoekfuntie_Settings {
 		if ( 0 < count( $sections ) ) {
 			foreach ( $sections as $k => $v ) {
 				$fields = $this->get_settings_fields( $v );
-				$values = get_option( 'alumni-zoekfuntie-' . $v, array() );
+				$values = get_option( 'alumni-zoekfunctie-' . $v, array() );
 
 				if ( is_array( $fields ) && 0 < count( $fields ) ) {
 					foreach ( $fields as $i => $j ) {
