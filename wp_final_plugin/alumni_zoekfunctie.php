@@ -289,7 +289,7 @@ final class Alumni_Zoekfunctie {
 		{
 			if(!isset($_SESSION['alumni_user']) && isset($_GET['ticket']))
 			{
-				cas();
+				$this->cas();
 			}
 		}
 
