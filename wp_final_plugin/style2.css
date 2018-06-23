@@ -1,11 +1,11 @@
 
-		.alumnicontainer
+		.alumni_alumnicontainer
 		{
 			/*position: absolute;*/
 			display: none;
 		}
 		
-		.sidebar {
+		.alumni_sidebar {
 			width:30%;
 			display: inline-block;
 			margin-left: 10%;
@@ -13,36 +13,36 @@
 			color: white;
 		}
 
-		.alumnicontainer img {
+		.alumni_alumnicontainer img {
 			width: 100%;
 		}
 
-		.sidebar-top { position: relative; }
+		.alumni_sidebar-top { position: relative; }
 
-		.profile-basic {
+		.alumni_profile-basic {
 			position: absolute;
 			bottom: 0px;
 			left: 50px;
 		}
 
-		.profile-info {
+		.alumni_profile-info {
 			padding: 20px 10px;
 			border-bottom: 1px solid #4783c2;
 		}
 
-		 .profile-info p{
+		 .alumni_profile-info p{
 			margin-left: 10px;
 			display: inline-block;
 			vertical-align: top;
 			margin-bottom: 5px;
 		}
 
-		.profile-info .key{
+		.alumni_profile-info .key{
 			font-weight: bold;	
 		}
 
 
-		.content {
+		.alumni_content {
 			width: 48%;
 			margin-left: 2%;
 			float: right;
@@ -50,31 +50,31 @@
 			vertical-align: top;
 		}
 
-		.work-experience{
+		.alumni_work-experience{
 			margin-bottom: 30px;
 			padding: 5% 2% 5% 10%;
 			background: white;
 			box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
 		}
 
-		.info {
+		.alumni_info {
 			padding: 2% 1%;
 			border-bottom: 1px solid #bdbdbd;
 		}
     
 
-		.sub-heading { 
+		.alumni_sub-heading { 
       font-weight: bold;       
     }
 
-		.duration {
+		.alumni_duration {
 			color: #5da4d9;
 			font-size:12px;
 		}
-h1.name {
+h1.alumni_name {
    font-size: 1.25em;
 }
 
-h1.heading {
+h1.alumni_heading {
    font-size: 1.25em;
 }

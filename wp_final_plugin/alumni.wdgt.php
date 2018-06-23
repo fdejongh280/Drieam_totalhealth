@@ -15,7 +15,7 @@ class Alumni_Widget extends WP_Widget {
 			'Alumni_Widget', // Base ID
 			__( 'Eduframe - Alumni', 'eduframe' ), // Name
 			array(
-				'description' => __( 'Eduframe Alumin widget', 'eduframe' ),
+				'description' => __( 'Eduframe Alumni widget', 'eduframe' ),
 			) // Args
 		);
 	}
@@ -62,44 +62,41 @@ class Alumni_Widget extends WP_Widget {
 		echo $args['before_widget'];
 
 		?>
-        <body id = "custombody">
-<header id="zoekfunctie" role="banner" class="column-xs main-xs-center">
-<button id = "logIn">Log in</button>
-<button id = "goToMyAlumniPage" style="display:none;">Ga naar mijn alumni pagina</button>
-<p id= "loggedInUserCallback"><?php if(isset($_SESSION['alumni_user'])){ echo "ingelogd als: ".$_SESSION['alumni_user'];}else{echo '';};?></p>
-    <form id="locator" class="container column-xs row-md cross-xs-stretch cross-md-end" action="">
+        <body id = "alumni_custombody">
+	<header id="alumni_zoekfunctie" role="banner" class="column-xs main-xs-center">
+    <form id="alumni_locator" class="container column-xs row-md cross-xs-stretch cross-md-end" action="">
         <div class="col">
-        <label id = "zoekveld" for="locator_text">Zoeken op postcode of woonplaats</label>
-        <input type="text" id="searchTextField" name="searchTextField" placeholder="Zoek op postcode of woonplaats" required>
+        <label id = "alumni_zoekveld" for="locator_text">Zoeken op postcode of woonplaats</label>
+        <input type="text" id="alumni_searchTextField" name="searchTextField" placeholder="Zoek op postcode of woonplaats" required>
         </div>
-    <div id = "searchOptionsContainer" class="col-xs-two-thirds col-md-quarter">
+    <div id = "alumni_searchOptionsContainer" class="col-xs-two-thirds col-md-quarter">
 	<br />
-    <label id = "zoekveld" for="locator_radius">Astand</label>
-        <select id="locator_radius" name="locator_radius">
-            <option id= "afstand" value="25">25 km</option>
-            <option id= "afstand" value="50">50 km</option>
-            <option id= "afstand" value="100">100 km</option>
-            <option id= "afstand" value="125">125 km</option>
-            <option id= "afstand" value="150">150 km</option>
-            <option id= "afstand" value="400">Toon alles</option>
+    <label id = "alumni_zoekveld" for="locator_radius">Astand</label>
+        <select id="alumni_locator_radius" name="locator_radius">
+            <option id= "alumni_afstand" value="25">25 km</option>
+            <option id= "alumni_afstand" value="50">50 km</option>
+            <option id= "alumni_afstand" value="100">100 km</option>
+            <option id= "alumni_afstand" value="125">125 km</option>
+            <option id= "alumni_afstand" value="150">150 km</option>
+            <option id= "alumni_afstand" value="400">Toon alles</option>
         </select>
     </div>
-    <button id = "zoeken" type="submit">zoeken</button>
+    <button id = "alumni_zoeken" type="submit">zoeken</button>
     </form>
 </header>
 </body>
-<aside id="map"></aside>
-<main id="results"></main>
-<div class="alumnicontainer">
-		<div class="sidebar">
-			<div class="sidebar-top">
-				<input type="file" style="display: none;" name="fileToUpload" id="fileToUpload">
-				<img class="profile-image" src="https://i.stack.imgur.com/l60Hf.png" />
-				<div class="profile-basic">
-					<h1 class="name"></h1>
+<aside id="alumni_map"></aside>
+<main id="alumni_results"></main>
+<div class="alumni_alumnicontainer">
+		<div class="alumni_sidebar">
+			<div class="alumni_sidebar-top">
+				<input type="file" style="display: none;" name="fileToUpload" id="alumni_fileToUpload">
+				<img class="alumni_profile-image" src="https://i.stack.imgur.com/l60Hf.png" />
+				<div class="alumni_profile-basic">
+					<h1 class="alumni_name"></h1>
 				</div>
 			</div>
-			<div class="profile-info">
+			<div class="alumni_profile-info">
 				<p class="key">Email:</p>
 				<p class="value" id = "email"></p><br>
                 <p class="key">Telefoon:</p>
@@ -110,20 +107,20 @@ class Alumni_Widget extends WP_Widget {
                 <!--<p class="key">Afgeronde cursussen:</p>
 				<p class="value" id = "courses"></p><br>-->
 			</div>
-			<button id = "goBack" class = "btn">Terug</button>
+			<button id = "alumni_goBack" class = "btn">Terug</button>
 		</div>
-		<div class="content">
-			<div class="work-experience">
-				<h1 class="heading"> Masseuse</h1>
-				<div class="info">
+		<div class="alumni_content">
+			<div class="alumni_work-experience">
+				<h1 class="alumni_heading"> Masseuse</h1>
+				<div class="alumni_info">
 					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                     
                     <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
                     
                     <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
 				</div>
-				<button id = "editText" style="display: none; ">Text bewerken</button>
-				<button id = "saveChanges" style="display: none;">Bewerking opslaan</button>
+				<button id = "alumni_editText" style="display: none; ">Text bewerken</button>
+				<button id = "alumni_saveChanges" style="display: none;">Bewerking opslaan</button>
 				<script type="text/babel" data-presets="es2015,stage-3"></script>
 			</div>
 		</div>

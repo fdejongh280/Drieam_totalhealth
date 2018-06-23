@@ -220,7 +220,6 @@ final class Alumni_Zoekfunctie_Settings {
 		$settings_sections = array();
 
 		$settings_sections['standard-fields'] = __( 'Standard Fields', 'alumni-zoekfunctie' );
-		$settings_sections['special-fields'] = __( 'Special Fields', 'alumni-zoekfunctie' );
 		// Add your new sections below here.
 		// Admin tabs will be created for each section.
 		// Don't forget to add fields for the section in the get_settings_fields() function below
@@ -257,9 +256,6 @@ final class Alumni_Zoekfunctie_Settings {
 												'description' => __( 'Bijvoorbeeld: f00c7fadeab67e69bc6e0f0dc0d1edf8', 'alumni-zoekfunctie' )
 											);
 			
-
-				break;
-			case 'special-fields':
 
 				break;
 			default:

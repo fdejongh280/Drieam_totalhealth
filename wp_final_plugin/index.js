@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
-  if(jQuery("#loggedInUserCallback")[0].innerText.length > 0){
-    jQuery("#goToMyAlumniPage").removeAttr('style');
+  if(jQuery("#alumni_loggedInUserCallback")[0].innerText.length > 0){
+    jQuery("#alumni_goToMyAlumniPage").removeAttr('style');
   }
   var loggedInUser;
   var markers = [];
@@ -63,7 +63,7 @@ jQuery(document).ready(function(){
         add_marker(locations, i); // Add markers on the google maps
       }
    }
-    var input = document.getElementById('searchTextField');
+    var input = document.getElementById('alumni_searchTextField');
     var options = {
          types: ['(cities)'],
     componentRestrictions: {country: "nl"} // Only the netherlands
@@ -71,7 +71,7 @@ jQuery(document).ready(function(){
     
     new google.maps.places.Autocomplete(input, options);
 
-  var map = new google.maps.Map(document.getElementById('map'), {
+  var map = new google.maps.Map(document.getElementById('alumni_map'), {
     center: {
       lat: 52.224196,
       lng: 5.678053
@@ -87,9 +87,9 @@ jQuery(document).ready(function(){
    
   
   
-  jQuery('#locator button').on('click',function(e) {
+  jQuery('#alumni_locator button').on('click',function(e) {
     e.preventDefault();
-    var address = jQuery('#searchTextField').val();
+    var address = jQuery('#alumni_searchTextField').val();
     var radiusmiles = parseInt(jQuery('select').val());
     var radiusmetric = radiusmiles * 0.62137; //km -> mi
       radiusmetric = radiusmetric /0.00062137; // mi -> meters
@@ -134,7 +134,7 @@ jQuery(document).ready(function(){
 
 
   function resultstotal(resultstotal, radius, search, circlearea) {
-    jQuery('#results').empty().append('<p class="col" style="margin-left: 20px;">' + resultstotal + ' therapeut(en) binnen ' + radius + 'km rond ' + search + '</p><ol class="col"></ol>');
+    jQuery('#alumni_results').empty().append('<p class="col" style="margin-left: 20px;">' + resultstotal + ' therapeut(en) binnen ' + radius + 'km rond ' + search + '</p><ol class="col"></ol>');
     in_area.sort(function(a, b) {
       return a[3] - b[3];
     });
@@ -145,20 +145,20 @@ jQuery(document).ready(function(){
       var dealeremail = in_area[i][2];
       var distanceround = in_area[i][3];
 
-      jQuery('#results ol').append('<li class = "therapist" value = "'+in_area[i][4]+'">' + // Append results to dom
-        '<h4 id = "heading">' + dealername + ' </h4>' +
-        '<p id = "text">' + dealeraddress + '</p>' +
+      jQuery('#alumni_results ol').append('<li class = "alumni_therapist" value = "'+in_area[i][4]+'">' + // Append results to dom
+        '<h4 id = "alumni_heading">' + dealername + ' </h4>' +
+        '<p id = "alumni_text">' + dealeraddress + '</p>' +
         '<a href="mailto:' + dealeremail + '">' + dealeremail + '</a>' +
         '</li>');
     }
-    jQuery('#results ol .therapist').on('click', function(){
+    jQuery('#alumni_results ol .alumni_therapist').on('click', function(){
       alumni = searchForCorrespondingAlumnibyID(jQuery(this).val());
 
      fillAlumniPage(alumni);
     });
 
-    jQuery('#results, #map').addClass('active');
-    jQuery('#results').on('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', function(e) {
+    jQuery('#alumni_results, #alumni_map').addClass('active');
+    jQuery('#alumni_results').on('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', function(e) {
       centermap();
       map.fitBounds(circlearea.getBounds());
     });
@@ -191,10 +191,10 @@ function searchForCorrespondingAlumniByUsername(username)
 
   function fillAlumniPage(alumni)
   {
-    jQuery('.alumnicontainer .sidebar .sidebar-top .profile-basic .name').text(alumni[0]);
-    jQuery('.alumnicontainer .sidebar .profile-info #email').text(alumni[6]);
-    jQuery('.alumnicontainer .sidebar .profile-info #address').text(alumni[3] +" "+alumni[4] + ", "+ alumni[5]);
-    jQuery('.alumnicontainer .sidebar .profile-info #tel').text(alumni[8]);
+    jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_sidebar-top .alumni_profile-basic .alumni_name').text(alumni[0]);
+    jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_profile-info #email').text(alumni[6]);
+    jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_profile-info #address').text(alumni[3] +" "+alumni[4] + ", "+ alumni[5]);
+    jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_profile-info #tel').text(alumni[8]);
               
               var data = {
                 action: 'get_alumni_content',
@@ -209,65 +209,65 @@ function searchForCorrespondingAlumniByUsername(username)
                   if(jsonResponse.length > 1)
                   {
                     console.log(jsonResponse);
-                     jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
+                     jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_sidebar-top .alumni_profile-image ')
                     .attr('src', jsonResponse[1]);
                   }
                   else{
-                  jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
+                  jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_sidebar-top .alumni_profile-image ')
                     .attr('src', "https://i.stack.imgur.com/l60Hf.png");
                   }
-                  jQuery('.alumnicontainer .content .info').text(jsonResponse[0].post_content);
-                  jQuery('.alumnicontainer .content .heading').text(jsonResponse[0].post_title);
+                  jQuery('.alumni_alumnicontainer .alumni_content .alumni_info').text(jsonResponse[0].post_content);
+                  jQuery('.alumni_alumnicontainer .alumni_content .alumni_heading').text(jsonResponse[0].post_title);
                 }
                 else{
-                  jQuery('.alumnicontainer .content .info').text('Heeft nog geen biografie toegevoegd');
-                  jQuery('.alumnicontainer .content .heading').text("Nog geen expertise toegevoegd");
-                   jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
+                  jQuery('.alumni_alumnicontainer .alumni_content .alumni_info').text('Heeft nog geen biografie toegevoegd');
+                  jQuery('.alumni_alumnicontainer .alumni_content .alumni_heading').text("Nog geen expertise toegevoegd");
+                   jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_sidebar-top .alumni_profile-image ')
                     .attr('src', "https://i.stack.imgur.com/l60Hf.png");
                 }
                      toggleViews();
                   if(loggedInUser == alumni[6]) // Give the person rights to edit page if it is the user
                   {
-                      jQuery('#editText').removeAttr('style');
-                      jQuery('#fileToUpload').removeAttr('style');
-                      jQuery('#editText').on('click', function(){
-                      jQuery('.alumnicontainer .content .heading').attr('contentEditable',true);
-                      jQuery('.alumnicontainer .content .info').attr('contentEditable',true);
-                      jQuery('#saveChanges').removeAttr('style');
+                      jQuery('#alumni_editText').removeAttr('style');
+                      jQuery('#alumni_fileToUpload').removeAttr('style');
+                      jQuery('#alumni_editText').on('click', function(){
+                      jQuery('.alumni_alumnicontainer .alumni_content .alumni_heading').attr('contentEditable',true);
+                      jQuery('.alumni_alumnicontainer .alumni_content .alumni_info').attr('contentEditable',true);
+                      jQuery('#alumni_saveChanges').removeAttr('style');
                     });
                   }
               });
 
 }
-jQuery('.alumnicontainer #goBack').on('click', function(){
+jQuery('.alumni_alumnicontainer #alumni_goBack').on('click', function(){
   toggleViews();
-  jQuery('#saveChanges').css("display", "none");
-  jQuery('#fileToUpload').css("display", "none")
-  jQuery('#editText').css("display", "none");
-  jQuery('.alumnicontainer .content .heading').attr('contentEditable',false);
-  jQuery('.alumnicontainer .content .info').attr('contentEditable',false);
+  jQuery('#alumni_saveChanges').css("display", "none");
+  jQuery('#alumni_fileToUpload').css("display", "none")
+  jQuery('#alumni_editText').css("display", "none");
+  jQuery('.alumni_alumnicontainer .alumni_content .alumni_heading').attr('contentEditable',false);
+  jQuery('.alumni_alumnicontainer .alumni_content .alumni_info').attr('contentEditable',false);
 });
 
    function toggleViews()
    {
-      jQuery('header').toggle();
-      jQuery('#results').toggle();
-      jQuery('#map').toggle();
-      jQuery('.alumnicontainer').toggle();
+      jQuery('#alumni_zoekfunctie').toggle();
+      jQuery('#alumni_results').toggle();
+      jQuery('#alumni_map').toggle();
+      jQuery('.alumni_alumnicontainer').toggle();
       //jQuery('#main').toggle();
    }
 
-           jQuery('#saveChanges').on('click', function(){
+           jQuery('#alumni_saveChanges').on('click', function(){
              if(loggedInUser == alumni[6])
              {
                var fd = new FormData();
-               if( jQuery('#fileToUpload')[0].files.length > 0)
+               if( jQuery('#alumni_fileToUpload')[0].files.length > 0)
                {
-                  fd.append( "image", jQuery('#fileToUpload')[0].files[0]);
+                  fd.append( "image", jQuery('#alumni_fileToUpload')[0].files[0]);
                }
                fd.append( "action", 'post_alumni_data');      
-               fd.append("text", jQuery('.alumnicontainer .content .info').text());
-               fd.append("title", jQuery('.alumnicontainer .content .heading').text());
+               fd.append("text", jQuery('.alumni_alumnicontainer .alumni_content .alumni_info').text());
+               fd.append("title", jQuery('.alumni_alumnicontainer .alumni_content .alumni_heading').text());
                fd.append("id", alumni[7]);
                fd.append("user", alumni[6]);
               jQuery.ajax({
@@ -289,15 +289,15 @@ jQuery('.alumnicontainer #goBack').on('click', function(){
              }
         });
 
-jQuery('#fileToUpload').on('change', function() { // Change tumbnail to uploaded image
-    jQuery('#saveChanges').removeAttr('style');
+jQuery('#alumni_fileToUpload').on('change', function() { // Change tumbnail to uploaded image
+    jQuery('#alumni_saveChanges').removeAttr('style');
     var input = jQuery(this)[0];
     console.log(input);
     if (input.files && input.files[0]) {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                    jQuery('.alumnicontainer .sidebar .sidebar-top .profile-image ')
+                    jQuery('.alumni_alumnicontainer .alumni_sidebar .alumni_sidebar-top .alumni_profile-image ')
                     .attr('src', e.target.result)
   
             };
@@ -306,8 +306,8 @@ jQuery('#fileToUpload').on('change', function() { // Change tumbnail to uploaded
         }
 });
 
-  jQuery('#logIn').on('click', function(){
-    if(jQuery("#loggedInUserCallback")[0].innerText.length == 0)
+  jQuery('#alumni_logIn').on('click', function(){
+    if(jQuery("#alumni_loggedInUserCallback")[0].innerText.length == 0)
     {
       var ticket = getQueryVariable("ticket");
       if(ticket)
@@ -346,14 +346,20 @@ function getQueryVariable(variable)
        return(false);
 }
 
-  jQuery('#goToMyAlumniPage').on('click', function(){
+  jQuery('#alumni_goToMyAlumniPage').on('click', function(){
         var data = {
       action: 'get_username',
     };
          jQuery.get(the_ajax_script.ajaxurl, data, function(response) { 
             loggedInUser = response
             alumni = searchForCorrespondingAlumniByUsername(loggedInUser);
-            fillAlumniPage(alumni);
+            if(alumni != "")
+            {
+              fillAlumniPage(alumni);
+            }
+            else{
+              alert("Je hebt geen alumnipagina");
+            }
          });
 
   }); 

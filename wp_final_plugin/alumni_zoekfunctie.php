@@ -16,7 +16,7 @@
  * @category Core
  * @author Matty
  */
-	require_once( 'alumni.wdgt.php' );
+	require_once( 'main.php' );
   session_start();
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
@@ -127,7 +127,6 @@ final class Alumni_Zoekfunctie {
 		$this->version 			= '1.0.0';
 
 		//include ajax handler files
-		require_once('classes/functions.php');
 		// Admin - Start
 		require_once( 'classes/class-alumni-zoekfunctie-settings.php' );
 			$this->settings = Alumni_Zoekfunctie_Settings::instance();
@@ -148,9 +147,151 @@ final class Alumni_Zoekfunctie {
 		register_activation_hook( __FILE__, array( $this, 'install' ) );
 
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		//action filters for functions below
+		add_action('wp_ajax_post_alumni_data', array( $this,'insert_or_update_data_from_alumni_in_db'));
+		add_action('wp_ajax_nopriv_post_alumni_data', array( $this,'insert_or_update_data_from_alumni_in_db'));
+		add_action('wp_ajax_get_alumni_content', array( $this,'fetch_alumni_data_from_db'));
+		add_action('wp_ajax_nopriv_get_alumni_content', array( $this,'fetch_alumni_data_from_db'));
+		add_action('wp_ajax_get_json_data', array( $this,'fetch_data_from_eduframe_endpoint'));
+		add_action('wp_ajax_nopriv_get_json_data', array( $this,'fetch_data_from_eduframe_endpoint'));
+		add_action('wp_ajax_get_username', array( $this,'echo_username_if_logged_in'));
+		add_action('wp_ajax_nopriv_get_username', array( $this,'echo_username_if_logged_in'));
+		add_action('wp_loaded', array( $this,'handle_cas'));
 	} // End __construct()
 
+	 //Begin funtions
+	public function insert_or_update_data_from_alumni_in_db() // This function updates of inserts data provided by the ajax call
+	{
+		$post_id = "";
+  		if ( isset( $_POST["text"] ) ) 
+		{
+			if($_POST['user'] == $_SESSION['alumni_user'])
+			{
+				$my_query = new WP_Query( array( 'post_type' => 'alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
+				if( $my_query->have_posts()) {
+					$post = array();
+					$post['ID'] 				= $my_query->posts[0]->ID;
+					$post['post_title']         = $_POST['title'];
+					$post['post_content']       = $_POST['text'];
+					$post['post_type']      = 'alumni';
+					wp_update_post($post);
+					$post_id = $post['ID'];
+					echo 'tekst geupdate';
+				}
+				else{
+					$post = array();
+					$post['post_title']         = $_POST['title'];
+					$post['post_content']       = $_POST['text'];
+					$post['post_type']      = 'alumni';
+					$postID                 = wp_insert_post($post);
+					add_post_meta($postID, 'alumni_author_id', $_POST['id']);
+					$post_id = $postID;
+					echo 'tekst in de database gestopt';
+				}
+				if(isset($_FILES['image'] ) ) {
+					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+					require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+					require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+					$file_handler = 'image';
+					$attach_id = media_handle_upload($file_handler,$post_id );
+					update_post_meta($post_id,'_thumbnail_id',$attach_id);
+				}
+			}
+			else
+			{
+				echo "Je bent niet ingelogd als deze gebruiker!";
+			}
 
+		}
+			die();
+		}
+
+		public function fetch_alumni_data_from_db() // Tis function sends back the content of an alumni from the database
+		{
+			if ( isset( $_POST["id"] ) ) 
+			{
+				$my_query = new WP_Query( array( 'post_type' => 'alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
+			}
+			if( $my_query->have_posts())
+			{
+				$post_data = $my_query->posts[0];
+				$thumb_id = get_post_thumbnail_id($post_data->ID);
+				$data_response[] = $post_data;
+
+				if($thumb_id)
+				{
+					$thumb_url = wp_get_attachment_image_src($thumb_id,'thumbnail-size', true);
+					$data_response[] = $thumb_url[0];
+				}
+				echo (json_encode($data_response));
+			}
+			else 
+			{
+				echo "false";
+			}
+					die();
+		}
+
+
+
+		public function fetch_data_from_eduframe_endpoint() { // This function sends back the data from the eduframe endpoint 
+
+			$auth = Alumni_Zoekfunctie()->settings->get_settings()['auth'];
+			$headers = array(
+				'Authorization' => 'Bearer ' . $auth 
+			);
+			$request = array(
+				'headers' => $headers,
+				'method'  => "GET",
+			);
+			$responses = [];
+			$getCustomersForMap = wp_remote_request(Alumni_Zoekfunctie()->settings->get_settings()['url']."/api/v1/customers?include=address", $request);
+			$getPassedCources = wp_remote_request(Alumni_Zoekfunctie()->settings->get_settings()['url']."/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
+			$getEnrollments = wp_remote_request(Alumni_Zoekfunctie()->settings->get_settings()['url']."/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
+			array_push($responses, $getCustomersForMap, $getPassedCources, $getEnrollments);
+			echo wp_send_json($responses);
+			die();
+		}
+
+		public function echo_username_if_logged_in() { // This function sends back the data from the eduframe endpoint 
+			if(isset($_SESSION['alumni_user']))
+			{
+				echo $_SESSION['alumni_user'];
+			}
+			else{
+				echo "false";
+			}
+			die();
+		}
+
+
+
+		public function cas() // This function is called when the headers are send becase wp_redirect makes use of a header
+			{
+			//Construct ticketurl
+				$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+				$ticketUrl = 'http://' . $_SERVER['HTTP_HOST'] . $uri_parts[0]; 
+				$url = Alumni_Zoekfunctie()->settings->get_settings()['url']."/cas/proxyValidate.xml?service=".$ticketUrl."&ticket=" .$_GET['ticket'];
+				$response = wp_remote_get($url);
+				$xml = wp_remote_retrieve_body($response);
+				$user = strip_tags($xml);
+				if (strpos($user, '@') !== false) 
+				{
+				// split response into valid username
+					$user = explode('@',$user,2);
+					$user = $user[1]; 
+					$_SESSION['alumni_user'] = preg_replace('/\s+/', '', $user);
+				}
+					
+			}
+
+		public function handle_cas()
+		{
+			if(!isset($_SESSION['alumni_user']) && isset($_GET['ticket']))
+			{
+				cas();
+			}
+		}
 
 	/**
 	 * Main Alumni_Zoekfunctie Instance
