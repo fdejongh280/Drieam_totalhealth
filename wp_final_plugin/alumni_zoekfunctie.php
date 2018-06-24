@@ -160,50 +160,50 @@ final class Alumni_Zoekfunctie {
 	} // End __construct()
 
 	 //Begin funtions
-	public function insert_or_update_data_from_alumni_in_db() // This function updates of inserts data provided by the ajax call
-	{
-		$post_id = "";
-  		if ( isset( $_POST["text"] ) ) 
+		public function insert_or_update_data_from_alumni_in_db() // This function updates of inserts data provided by the ajax call
 		{
-			if($_POST['user'] == $_SESSION['alumni_user'])
+			$post_id = "";
+			if ( isset( $_POST["text"] ) ) 
 			{
-				$my_query = new WP_Query( array( 'post_type' => 'alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
-				if( $my_query->have_posts()) {
-					$post = array();
-					$post['ID'] 				= $my_query->posts[0]->ID;
-					$post['post_title']         = $_POST['title'];
-					$post['post_content']       = $_POST['text'];
-					$post['post_type']      = 'alumni';
-					wp_update_post($post);
-					$post_id = $post['ID'];
-					echo 'tekst geupdate';
+				if($_POST['user'] == $_SESSION['alumni_user'])
+				{
+					$my_query = new WP_Query( array( 'post_type' => 'alumni', 'meta_key' => 'alumni_author_id', 'meta_value' => $_POST['id'] ) );
+					if( $my_query->have_posts()) {
+						$post = array();
+						$post['ID'] 				= $my_query->posts[0]->ID;
+						$post['post_title']         = $_POST['title'];
+						$post['post_content']       = $_POST['text'];
+						$post['post_type']      = 'alumni';
+						wp_update_post($post);
+						$post_id = $post['ID'];
+						echo 'tekst geupdate';
+					}
+					else{
+						$post = array();
+						$post['post_title']         = $_POST['title'];
+						$post['post_content']       = $_POST['text'];
+						$post['post_type']      = 'alumni';
+						$postID                 = wp_insert_post($post);
+						add_post_meta($postID, 'alumni_author_id', $_POST['id']);
+						$post_id = $postID;
+						echo 'tekst in de database gestopt';
+					}
+					if(isset($_FILES['image'] ) ) {
+						require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+						require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+						require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+						$file_handler = 'image';
+						$attach_id = media_handle_upload($file_handler,$post_id );
+						update_post_meta($post_id,'_thumbnail_id',$attach_id);
+					}
 				}
-				else{
-					$post = array();
-					$post['post_title']         = $_POST['title'];
-					$post['post_content']       = $_POST['text'];
-					$post['post_type']      = 'alumni';
-					$postID                 = wp_insert_post($post);
-					add_post_meta($postID, 'alumni_author_id', $_POST['id']);
-					$post_id = $postID;
-					echo 'tekst in de database gestopt';
+				else
+				{
+					echo "Je bent niet ingelogd als deze gebruiker!";
 				}
-				if(isset($_FILES['image'] ) ) {
-					require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-					require_once(ABSPATH . "wp-admin" . '/includes/file.php');
-					require_once(ABSPATH . "wp-admin" . '/includes/media.php');
-					$file_handler = 'image';
-					$attach_id = media_handle_upload($file_handler,$post_id );
-					update_post_meta($post_id,'_thumbnail_id',$attach_id);
-				}
-			}
-			else
-			{
-				echo "Je bent niet ingelogd als deze gebruiker!";
-			}
 
-		}
-			die();
+			}
+				die();
 		}
 
 		public function fetch_alumni_data_from_db() // Tis function sends back the content of an alumni from the database
@@ -229,7 +229,7 @@ final class Alumni_Zoekfunctie {
 			{
 				echo "false";
 			}
-					die();
+			die();
 		}
 
 
@@ -246,9 +246,11 @@ final class Alumni_Zoekfunctie {
 			);
 			$responses = [];
 			$getCustomersForMap = wp_remote_request(Alumni_Zoekfunctie()->settings->get_settings()['url']."/api/v1/customers?include=address", $request);
-			$getPassedCources = wp_remote_request(Alumni_Zoekfunctie()->settings->get_settings()['url']."/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
-			$getEnrollments = wp_remote_request(Alumni_Zoekfunctie()->settings->get_settings()['url']."/api/v1/courses?include=planned_courses.customer_enrollments.enrollments", $request);
-			array_push($responses, $getCustomersForMap, $getPassedCources, $getEnrollments);
+			array_push($responses, $getCustomersForMap, Alumni_Zoekfunctie()->settings->get_settings()['url']);
+			if(isset($_SESSION['alumni_user']))
+			{
+				array_push($responses, $_SESSION['alumni_user']);
+			}
 			echo wp_send_json($responses);
 			die();
 		}

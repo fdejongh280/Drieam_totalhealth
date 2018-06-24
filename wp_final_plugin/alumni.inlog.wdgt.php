@@ -115,5 +115,5 @@ class Alumni_Widget_Inlog extends WP_Widget {
 	}
 }
 
-add_shortcode( 'eduframe_alumni', array( 'Alumni_Widget_Login', 'shortcode' ) );
+add_shortcode( 'eduframe_alumni_login', array( 'Alumni_Widget_Login', 'shortcode' ) );
 
