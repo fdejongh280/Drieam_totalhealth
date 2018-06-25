@@ -1,6 +1,7 @@
 jQuery(document).ready(function(){
   if(jQuery("#alumni_loggedInUserCallback")[0].innerText.length > 0){
     jQuery("#alumni_goToMyAlumniPage").removeAttr('style');
+    jQuery("#alumni_logIn").text("log uit");
   }
   var loggedInUser, alumni, cas_url, dataForMap;
   var markers = [];
@@ -52,6 +53,7 @@ jQuery(document).ready(function(){
           var ticket = getQueryVariable("ticket");
           if(ticket)
           {
+            console.log(cas_url);
             var oldURL = window.location.href
             var index = 0;
             var newURL = oldURL;
@@ -69,7 +71,13 @@ jQuery(document).ready(function(){
           }
         }
         else{
-          alert("Je bent al ingelogd");
+          var data = {
+            action: 'log_out',
+          };
+          jQuery.get(the_ajax_script.ajaxurl, data, function(response) {
+             window.location.href = cas_url + '/cas/logout';
+             loggedInUser = null;
+          });
         }
       });
     });
@@ -247,7 +255,6 @@ jQuery(document).ready(function(){
     console.log(state);
       if(state == "alumni")
       {
-        console.log("dwdw");
         jQuery('#alumni_zoekfunctie').hide();
         if(searchFlag)
         {
@@ -258,7 +265,6 @@ jQuery(document).ready(function(){
       }
       if(state == "search")
       {
-        console.log("kwelkfnwefkl");
         jQuery('#alumni_zoekfunctie').show();
         if(searchFlag)
         {
@@ -302,7 +308,6 @@ jQuery(document).ready(function(){
   function() { // Change tumbnail to uploaded image
     jQuery('#alumni_saveChanges').removeAttr('style');
     var input = jQuery(this)[0];
-    console.log(input);
     if (input.files && input.files[0]) {
       var reader = new FileReader();
       reader.onload = function (e) {
@@ -326,7 +331,7 @@ jQuery(document).ready(function(){
       var data = {
         action: 'get_username',
       };
-      jQuery.get(the_ajax_script.ajaxurl, data, function(response) { 
+      jQuery.get(the_ajax_script.ajaxurl, data, function(response) {
         loggedInUser = response
         alumni = searchForCorrespondingAlumniByUsername(loggedInUser);
         if(alumni != "")

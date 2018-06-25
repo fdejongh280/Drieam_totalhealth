@@ -156,6 +156,8 @@ final class Alumni_Zoekfunctie {
 		add_action('wp_ajax_nopriv_get_json_data', array( $this,'fetch_data_from_eduframe_endpoint'));
 		add_action('wp_ajax_get_username', array( $this,'echo_username_if_logged_in'));
 		add_action('wp_ajax_nopriv_get_username', array( $this,'echo_username_if_logged_in'));
+		add_action('wp_ajax_log_out', array( $this,'log_out'));
+		add_action('wp_ajax_nopriv_log_out', array( $this,'log_out'));
 		add_action('wp_loaded', array( $this,'handle_cas'));
 	} // End __construct()
 
@@ -286,6 +288,10 @@ final class Alumni_Zoekfunctie {
 				}
 					
 			}
+		public function log_out()
+		{
+			unset($_SESSION['alumni_user']);
+		}
 
 		public function handle_cas()
 		{
