@@ -46,7 +46,7 @@ jQuery(document).ready(function(){
         markers.push(marker);
         });
       });
-      jQuery('#alumni_logIn').on('click', 
+      jQuery('#alumni_logIn').on('click', //add login button handler
       function(){
         if(loggedInUser == null)
         {
@@ -105,7 +105,7 @@ jQuery(document).ready(function(){
    
   
   
-  jQuery('#alumni_locator button').on('click',function(e) {
+  jQuery('#alumni_locator button').on('click',function(e) { // search button click handler
     e.preventDefault();
     searchFlag = true;
     jQuery('#alumni_results').addClass('active');
